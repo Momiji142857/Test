@@ -8,7 +8,7 @@
   "minGameVersion": 154,
   "maxGameVersion": 154,
   "java": true,
-  "main": "example.ExampleJavaMod",
+  "main": "VeSchematics.VeSchematics",
   "hasScripts": false,
   "hidden": false
 }
