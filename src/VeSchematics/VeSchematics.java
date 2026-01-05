@@ -1,8 +1,9 @@
 package VeSchematics;
 
+import VeSchematics.content.blocks;
+import VeSchematics.content.items;
 import arc.Core;
 import arc.Events;
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.game.EventType;
 import mindustry.mod.Mod;
@@ -26,7 +27,7 @@ public class VeSchematics extends Mod {
 
     @Override
     public void loadContent(){
-        Log.info("Loading some example content.");
+        items.load();
+        blocks.load();
     }
-
 }
