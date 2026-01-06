@@ -1,14 +1,16 @@
 {
-  "name": "ve-schematics",
-  "displayName": "VE Schematics",
-  "version": "4.0",
-  "subtitle": "原版扩展(VE) 个人整合蓝图合集",
-  "description": "[#90DBFF[]]Vanilla Expansion原版扩展[white[]]蓝图合集\n[red[]]需要以VE模组作为前置![white[]]\n\n本合集主要收录并尝试优化了来自VE模组交流群的一些蓝图, 旨在让玩家能更方便地使用.\n\n[accent[]]主要来源与贡献者[white[]]\n感谢以下成员与资源的贡献(排名不分先后): [accent[]]·火星人076[white[]]\n -模组作者, 众多蓝图的制作者\n[accent[]]·[sky[]]Momiji142857[white[]]\n -合集整理与维护者, 对部分蓝图进行了适配性调整\n[accent[]]·蓝图档案馆\n[accent[]]·Steam创意工坊\n[accent[]]·雨落nya~\n[accent[]]·落日羽飞\n[accent[]]·闪亮善良\n[accent[]]·水波\n[accent[]]·貅:璇\n[accent[]]·守护天使\n[accent[]]·[#6ecdec[]]Cry0flu1d\n[accent[]]·冰酒.\n[accent[]]·I'm 人机\n[accent[]]·所有对蓝图提出意见与反馈的人们\n[white[]](更多来源可能未被记录, 感谢所有无名的贡献者!)\n\n合集版本: 4.0\n最后更新: 2026-01-06",
+  "name": "ve-addon-schematics",
+  "displayName": "VE Addon: Schematics",
+  "subtitle": "Vanilla Expansion 模组的蓝图扩展包",
+  "version": "4.0.0",
   "author": "[sky[]]Momiji142857[white[]]",
-  "minGameVersion": 154,
-  "maxGameVersion": 154,
+  "main": "ve.addon.schematics.VeAddonSchematics",
   "java": true,
-  "main": "VeSchematics.VeSchematics",
   "hasScripts": false,
-  "hidden": false
+  "minGameVersion": 154,
+  "dependencies": [
+    "ve"
+  ],
+  "hidden": true,
+  "description": "[#90DBFF[]]Vanilla Expansion原版扩展[white[]]的蓝图附属模组\nschematics add‑on for the [#90DBFF[]]Vanilla Expansion[white[]] (VE)\n\n[red[]]需先启用 Vanilla Expansion 模组。\nRequires Vanilla Expansion to be enabled.[white[]]\n\n本模组主要收录并优化了来自VE模组交流群的一些蓝图，旨在让玩家能更方便地使用。\nThis pack collects and optimizes community schematics to make them easier for players to import and use.\n\n感谢所有为本合集贡献并参与测试的成员！\nThank you to everyone who contributed and helped test the pack!\n\n合集版本 / Pack version: 4.0\n最后更新 / Last updated: 2026-01-06"
 }
