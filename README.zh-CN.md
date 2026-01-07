@@ -1,6 +1,8 @@
 # VE 附属：蓝图扩展包 (VE Addon: Schematics)
 一个 Vanilla Expansion 模组的蓝图扩展包
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 ## 简介
 Vanilla Expansion 原版扩展 (VE) 模组的蓝图附属模组。
 
