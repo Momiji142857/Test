@@ -14,12 +14,11 @@ public class VeLiquids {
 
         lava = new Liquid("lava", Color.valueOf("f17e10")) {{
             barColor = Color.valueOf("df1717");
-            lightColor = Color.valueOf("df171744");
-            heatCapacity = 0.2f;
+            lightColor = Color.valueOf("df1717").a(44);
             temperature = 1.2f;
+            heatCapacity = 0.2f;
             viscosity = 0.95f;
             effect = StatusEffects.melting;
-            boilPoint = 2f;
             canStayOn.add(Liquids.slag);
         }};
 
@@ -45,6 +44,28 @@ public class VeLiquids {
             explosiveness = 100f;
             hidden = true;
         }};
+
+        /*
+        liquid = new Liquid("", Color.valueOf("")) {{
+            gas = ; // false
+            gasColor = Color.valueOf("");
+            barColor = Color.valueOf("");
+            lightColor = Color.valueOf("").a();
+            flammability = f;
+            temperature = f; // 0.5f
+            heatCapacity = f; // 0.5f
+            viscosity = f; // 0.5f
+            explosiveness = f; //
+            blockReactive = ; // true
+            coolant = ; // true
+            moveThroughBlocks = ; // true
+            incinerable = ; // true
+            effect = StatusEffects.; // none
+            boilPoint = 2f; // 2f
+            hidden = ;
+            canStayOn.add(Liquids.);
+        }};
+         */
 
     }
 }

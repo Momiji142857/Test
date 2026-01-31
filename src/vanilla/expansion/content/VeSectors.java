@@ -6,9 +6,10 @@ public class VeSectors {
     public static SectorPreset
             // cyclant
             barrierHill, carbonRelics, wetlandMiningfield, intervalley,
-            volcanicTop, fortPort, gobi, fungusFactory, shaleQuarry, unitLaboratory,
-            ruins, thoriumHacienda, nuclearPowerplant, crossForest,
-            primeRoute, planetaryCargoCenter, retreatZone,
+                    volcanicTop, fortPort, gobi, fungusFactory, shaleQuarry, unitLaboratory,
+                    ruins, thoriumHacienda, nuclearPowerplant, crossForest,
+                    primeRoute, planetaryCargoCenter, retreatZone,
+
             isolateIsland, siliconFacility, blastTest;
 
     public static void load() {
@@ -172,6 +173,23 @@ public class VeSectors {
             allowLaunchSchematics = true;
             allowLaunchLoadout = true;
         }};
+
+        /*
+        Sector = new SectorPreset("", Planets., ) {{
+            captureWave = 0; // 0
+            difficulty = f; // 0-10
+            startWaveTimeMultiplier = f; // 2f
+            addStartingItems = ; // false
+            noLighting = ; // false
+            isLastSector = ;
+            requireUnlock = ; // true
+            showSectorLandInfo = ; // true
+            overrideLaunchDefaults = ; // false
+            allowLaunchSchematics = ; // false
+            allowLaunchLoadout = ; // false
+            attackAfterWaves = ; // false
+        }};
+         */
 
     };
 }

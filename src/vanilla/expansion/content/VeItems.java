@@ -165,5 +165,18 @@ public class VeItems {
             cost = 0.2f;
             lowPriority = true;
         }};
+
+        /*
+        item = new Item("", Color.valueOf("")) {{
+            explosiveness = f; // 0f
+            flammability = f; // 0f
+            radioactivity = f;
+            charge = f; // 0f
+            hardness = ; // 0
+            cost = f; // 1f
+            lowPriority = ;
+        }};
+         */
+
     }
 }

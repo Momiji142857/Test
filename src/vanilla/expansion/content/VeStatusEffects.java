@@ -509,5 +509,38 @@ public class VeStatusEffects {
             color = Color.valueOf("777777");
         }};
 
+        /*
+        statusEffect = new StatusEffect("") {{
+            damageMultiplier = f; // 1f
+            healthMultiplier = f; // 1f
+            speedMultiplier = f; // 1f
+            reloadMultiplier = f; // 1f
+            buildSpeedMultiplier = f; // 1f
+            dragMultiplier = f; // 1f
+            transitionDamage = f; // 0f
+            disarm = ; // false
+            damage = f;
+            parentizeEffect = ;
+            permanent = ;
+            reactive = ;
+            effectChance = f; // 0.15f
+            show = ; // true
+            color = Color.valueOf("");
+            effect = new (); // Fx.none
+            applyEffect = new (); // Fx.none
+            applyExtend = ;
+            parentizeApplyEffect = ;
+            init(() -> {
+                opposite(StatusEffects., StatusEffects.);
+
+                affinity(StatusEffects., (unit, result, time) -> {
+                    unit.damagePierce();
+                    result.set(StatusEffects., Math.min(time + result.time, 300.0F));
+                });
+
+            });
+        }};
+         */
+
     }
 }
