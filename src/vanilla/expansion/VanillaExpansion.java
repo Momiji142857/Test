@@ -5,6 +5,12 @@ import mindustry.mod.Mod;
 import vanilla.expansion.content.*;
 
 public class VanillaExpansion extends Mod {
+
+    // 从饱和火力抄过来的qwq
+    public static String name(String add) {
+        return "ve2" + "-" + add;
+    }
+
     @Override
     public void loadContent() {
         VeItems.load();
@@ -93,18 +99,18 @@ public class VanillaExpansion extends Mod {
 // UnitType
         /*
         coreUnits = new UnitType("") {{
-            constructor = UnitEntity::create;
-            controller = u -> u.team.isAI() ? new BuilderAI(true, 400f) : new CommandAI();
-
+            constructor = ;
             speed = f; // 1.1f
             rotateSpeed = f; // 5f
             drag = f; // 0.3f
+            mineRange = f; // 70f
             accel = f; // 0.5f
             hitSize = f; // 6f
             health = f; // 200f
             armor = f; // 0f
             buildRange = ; // 220f
-            payloadCapacity = ; // 8
+            payloadCapacity = Mathf.sqr(f) * tilePayload; // 8
+            researchCostMultiplier = f; // 50f
             buildSpeed = f; // -1f
             buildBeamOffset = f; // 3.8f
             mineBeamOffset = f; // -1/0 f
@@ -117,6 +123,7 @@ public class VanillaExpansion extends Mod {
             pickupUnits = ; // true
             lowAltitude = ; // false
             drawBuildBeam = ; // true
+            abilities.add();
             immunities.add(VeStatusEffects.);
             lightColor = Color.valueOf(""); // fbd367
             targetFlags = new BlockFlag[]{BlockFlag., BlockFlag.};
@@ -124,13 +131,16 @@ public class VanillaExpansion extends Mod {
             mineTier = ; // -1
             mineSpeed = f; // 1f
             mineWalls = ; // false
-            weapons.add(new Weapon("") {{
+            weapons.add(new Weapon(VanillaExpansion.name("")) {{
                 ejectEffect = Fx.; // none
                 alternate = ; // true
                 rotate = ; // false
+                baseRotation = f; // 0f
                 top = ; // true
                 rotateSpeed = f; // 20f
                 reload = f; // 77f
+                inaccuracy = f; // 0f
+                shake = f; // 0f
                 recoil = f; // 1.5f
                 recoilTime = f; // -1f
                 recoilPow = f; // 1.8f
@@ -142,6 +152,7 @@ public class VanillaExpansion extends Mod {
                 minWarmup = f; // 0f
                 shootWarmupSpeed = f; // 0.1f
                 parentizeEffects = ;
+                layerOffset = f; // 0f
                 shootSound = Sounds.;
                 heatColor = Color.valueOf(""); // ab3400
                 parts.add();
