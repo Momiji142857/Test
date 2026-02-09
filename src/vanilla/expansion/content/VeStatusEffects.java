@@ -26,9 +26,6 @@ public class VeStatusEffects {
 
     public static void load() {
 
-        StatusEffects.corroded.buildSpeedMultiplier = 1.75f;
-        StatusEffects.corroded.damage = 0.3f;
-
         blown = new StatusEffect("blown") {{
             healthMultiplier = 0.9f;
             dragMultiplier = 0f;
@@ -511,27 +508,40 @@ public class VeStatusEffects {
 
         /*
         statusEffect = new StatusEffect("") {{
-            damageMultiplier = f; // 1f
-            healthMultiplier = f; // 1f
-            speedMultiplier = f; // 1f
-            reloadMultiplier = f; // 1f
-            buildSpeedMultiplier = f; // 1f
-            dragMultiplier = f; // 1f
-            transitionDamage = f; // 0f
-            disarm = ; // false
-            damage = f;
-            parentizeEffect = ;
-            permanent = ;
-            reactive = ;
-            effectChance = f; // 0.15f
-            show = ; // true
-            color = Color.valueOf("");
-            effect = new (); // Fx.none
-            applyEffect = new (); // Fx.none
-            applyExtend = ;
-            parentizeApplyEffect = ;
+            damageMultiplier = f; // 1f 伤害倍率
+            healthMultiplier = f; // 1f 生命值倍率
+            speedMultiplier = f; // 1f 速度倍率
+            reloadMultiplier = f; // 1f 开火速率倍率
+            buildSpeedMultiplier = f; // 1f 建造速度倍率
+            dragMultiplier = f; // 1f 移动阻力倍率
+            disarm = ; // false 是否缴械
+            reactive = ; // 是否仅用于元素反应
+            show = ; // true 是否在数据库中显示
+
+            // 伤害
+            transitionDamage = f; // 0f 元素反应的伤害
+            damage = f; // 每帧伤害
+            intervalDamageTime = f; // 间隔伤害的时间间隔
+            intervalDamage = f; // 间隔伤害
+            intervalDamagePierce = ; // false 间隔伤害是否穿甲
+
+            // 产生的粒子效果
+            color = Color.valueOf(""); // 状态效果的颜色
+            effect = new (); // Fx.none // 单位上随机生成的粒子效果
+            effectChance = f; // 0.15f 粒子效果出现的概率
+            parentizeEffect = ; // 粒子效果是否应该有一个父级
+            permanent = ; // 粒子效果是否会消失
+
+            // 应用效果
+            applyEffect = new (); // Fx.none // 单位被赋予该状态效果时产生的粒子效果
+            applyExtend = ; // 当单位已拥有此状态效果时, 是否仍然显示应用效果
+            applyColor = Color.valueOf(""); // 应用效果的颜色
+            parentizeApplyEffect = ; // 应用效果是否应有一个父级
+
+            outline = ; // true 如果为false, 将禁用轮廓线
+
             init(() -> {
-                opposite(StatusEffects., StatusEffects.);
+                opposite(StatusEffects., StatusEffects.); // 互斥的状态效果
 
                 affinity(StatusEffects., (unit, result, time) -> {
                     unit.damagePierce();
@@ -540,7 +550,45 @@ public class VeStatusEffects {
 
             });
         }};
-         */
+        */
+
+        /*
+        statusEffect = new StatusEffect("") {{
+            damageMultiplier = f; // 1f 伤害倍率
+            healthMultiplier = f; // 1f 生命值倍率
+            speedMultiplier = f; // 1f 速度倍率
+            reloadMultiplier = f; // 1f 开火速率倍率
+            buildSpeedMultiplier = f; // 1f 建造速度倍率
+            dragMultiplier = f; // 1f 移动阻力倍率
+            transitionDamage = f; // 0f 元素反应的伤害
+            disarm = ; // false 是否缴械
+            damage = f; // 每帧伤害
+            intervalDamageTime = f; // 间隔伤害的时间间隔
+            intervalDamage = f; // 间隔伤害
+            intervalDamagePierce = ; // false 间隔伤害是否穿甲
+            effectChance = f; // 0.15f 粒子效果出现的概率
+            parentizeEffect = ; // 粒子效果是否应该有一个父级
+            permanent = ; // 粒子效果是否会消失
+            reactive = ; // 是否仅用于元素反应
+            show = ; // true 是否在数据库中显示
+            color = Color.valueOf(""); // 状态效果的颜色
+            effect = new (); // Fx.none // 单位上随机生成的粒子效果
+            applyEffect = new (); // Fx.none // 单位被赋予该状态效果时产生的粒子效果
+            applyExtend = ; // 当单位已拥有此状态效果时, 是否仍然显示应用效果
+            applyColor = Color.valueOf(""); // 应用效果的颜色
+            parentizeApplyEffect = ; // 应用效果是否应有一个父级
+            outline = ; // true 如果为false, 将禁用轮廓线
+            init(() -> {
+                opposite(StatusEffects., StatusEffects.); // 互斥的状态效果
+
+                affinity(StatusEffects., (unit, result, time) -> {
+                    unit.damagePierce();
+                    result.set(StatusEffects., Math.min(time + result.time, 300.0F));
+                });
+
+            });
+        }};
+        */
 
     }
 }

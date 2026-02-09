@@ -17,14 +17,20 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
+import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.production.BeamDrill;
+import mindustry.world.blocks.production.Drill;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.draw.DrawTurret;
+import mindustry.world.draw.*;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 
@@ -200,7 +206,7 @@ public class VeBlocks {
                     testBoulder, testWall, testShieldWall, twoBillionWall,
                     testOmegaSpawn, testRequireChange, testSectordestroyer, test4spawn, testrec,
                     testDirectionalShield, testDisplayStorage, testAccelerator,
-                    coreNuleusRoot, coreNuleusRootSitrullus, coreSingularityRoot, teamProjectorCrux, isomorphicAcceleratorCrux, coreSingularityCrux, coreBoss, coreGeneralStg, coreGeneralFungikiller;
+                    coreNucleusRoot, coreNuleusRootSitrullus, coreSingularityRoot, teamProjectorCrux, isomorphicAcceleratorCrux, coreSingularityCrux, coreBoss, coreGeneralStg, coreGeneralFungikiller;
 
     public static void load() {
 
@@ -521,7 +527,7 @@ public class VeBlocks {
 
         redSoilPebble = new Floor("red-soil-pebble") {{
             speedMultiplier = 0.7f;
-            // status = dusty;
+            // status = StatusEffects.dusty;
             statusDuration = 600f;
             variants = 5;
             attributes.set(Attribute.water, -0.25f);
@@ -529,7 +535,7 @@ public class VeBlocks {
         }};
 
         redSoilWet = new Floor("red-soil-wet") {{
-            // status = muddy;
+            status = StatusEffects.muddy;
             statusDuration = 30f;
             variants = 4;
             itemDrop = VeItems.redSoil;
@@ -680,6 +686,7 @@ public class VeBlocks {
             rotateSpeed = 15f;
             coolant = consumeCoolant(0.1f);
             health = 220;
+            researchCostMultiplier = 0.15f;
             // shownPlanets.addAll(VePlanets.cyclant, VePlanets.maress);
         }};
 
@@ -819,6 +826,7 @@ public class VeBlocks {
             rotateSpeed = 22f;
             coolant = consumeCoolant(0.1f);
             health = 320;
+            researchCostMultiplier = 0.15f;
         }};
 
         pulse = new PowerTurret("pulse") {{
@@ -1620,7 +1628,8 @@ public class VeBlocks {
                         shots = 2;
                     }}
             );
-            // shootSound = Sounds.lasershootClassic;
+            predictTarget = false;
+            // shootSound = VeSounds.lasershootClassic;
             soundPitchMin = 1.5f;
             soundPitchMax = 1.5f;
             shootWarmupSpeed = 0.25f;
@@ -1651,6 +1660,332 @@ public class VeBlocks {
             researchCostMultiplier = 0.01f;
         }};
 
+        isomorphicDrill = new Drill("isomorphic-drill") {{
+            requirements(Category.production, with(VeItems.aluminium, 15));
+            tier = 2;
+            drillTime = 600f;
+            size = 2;
+            researchCostMultiplier = 0.05f;
+            consumeLiquid(Liquids.water, 1.5f / 60f).boost();
+        }};
+
+        isomorphicDrillHuge = new Drill("isomorphic-drill-huge") {{
+            requirements(Category.production, with(VeItems.aluminium, 65));
+            tier = 2;
+            drillTime = 600f;
+            size = 4;
+            researchCostMultiplier = 0.05f;
+            consumeLiquid(Liquids.water, 6f / 60f).boost();
+        }};
+
+        laserBore = new BeamDrill("laser-bore") {{
+            requirements(Category.production, with(VeItems.aluminium, 10, VeItems.quartz, 8));
+            drillTime = 240f;
+            tier = 4;
+            // consumesPower = true;
+            drillMultipliers.put(VeItems.aluminium, 1.5f);
+            drillMultipliers.put(VeItems.quartz, 2f);
+            sparkColor = heatColor = Color.valueOf("ffd37f");
+            size = 2;
+            researchCostMultiplier = 0.05f;
+            consumeLiquid(Liquids.hydrogen, 0.25f / 60f).boost();
+            consumePower(9f / 60f);
+        }};
+
+        powerDrill = new Drill("power-drill") {{
+            requirements(Category.production, with(Items.graphite, 16, VeItems.aluminium, 20));
+            tier = 3;
+            warmupSpeed = 0.03f;
+            drillTime = 320f;
+            liquidBoostIntensity = 1.8f;
+            rotateSpeed = 5f;
+            conductivePower = true;
+            size = 2;
+            researchCostMultiplier = 0.01f;
+            consumeLiquid(Liquids.water, 3f / 60f).boost();
+            consumePower(8f / 60f);
+        }};
+
+        rail = new Conveyor("rail") {{
+            requirements(Category.distribution, with(VeItems.aluminium, 1));
+            speed = 0.09f;
+            displayedSpeed = 12f;
+            pushUnits = false;
+            junctionReplacement = railJunction;
+            bridgeReplacement = railBridge;
+            drawTeamOverlay = false;
+            health = 25;
+            hasShadow = false;
+            drawCracks = false;
+            researchCostMultiplier = 0.125f;
+            // shownPlanets.addAll(VePlanets.cyclant, VePlanets.maress);
+        }};
+
+        railJunction = new Junction("rail-junction") {{
+            requirements(Category.distribution, with(VeItems.aluminium, 2));
+            speed = 10f;
+            capacity = 5;
+            squareSprite = false;
+            buildCostMultiplier = 6f;
+            researchCostMultiplier = 0.1f;
+            ((Conveyor)VeBlocks.rail).junctionReplacement = this;
+        }};
+
+        railBridge = new ItemBridge("rail-bridge") {{
+            requirements(Category.distribution, with(Items.lead, 8, VeItems.aluminium, 8));
+            range = 4;
+            transportTime = 2f;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            hasPower = false;
+            itemCapacity = 10;
+            squareSprite = false;
+            health = 80;
+            buildCostMultiplier = 3f;
+            researchCostMultiplier = 0.1f;
+            ((Conveyor)rail).bridgeReplacement = this;
+        }};
+
+        railRouter = new DuctRouter("rail-router") {{
+            requirements(Category.distribution, with(Items.lead, 4, VeItems.aluminium, 4));
+            speed = 2.5f;
+            solid = false;
+            squareSprite = false;
+            buildCostMultiplier = 4f;
+            researchCostMultiplier = 0.2f;
+            regionRotated1 = 1;
+        }};
+
+        railOverflowGate = new OverflowDuct("rail-overflow-gate") {{
+            requirements(Category.distribution, with(Items.lead, 2, VeItems.aluminium, 4));
+            speed = 2.5f;
+            solid = false;
+            squareSprite = false;
+            buildCostMultiplier = 4f;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        railUnderflowGate = new OverflowDuct("rail-underflow-gate") {{
+            requirements(Category.distribution, with(Items.lead, 2, VeItems.aluminium, 4));
+            speed = 2.5f;
+            invert = true;
+            solid = false;
+            squareSprite = false;
+            buildCostMultiplier = 4f;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        railUnloader = new DirectionalUnloader("rail-unloader") {{
+            requirements(Category.distribution, with(Items.graphite, 10, Items.silicon, 10));
+            speed = 2.5f;
+            allowCoreUnload = true;
+            solid = false;
+            squareSprite = false;
+            buildCostMultiplier = 3f;
+            researchCostMultiplier = 0.1f;
+            regionRotated1 = 1;
+        }};
+
+        aluminiumWall = new Wall("aluminium-wall") {{
+            requirements(Category.defense, with(VeItems.aluminium, 6));
+            health = 300;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        aluminiumWallLarge = new Wall("aluminium-wall-large") {{
+            requirements(Category.defense, with(VeItems.aluminium, 24));
+            health = 1200;
+            size = 2;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        aluminiumWallHuge = new Wall("aluminium-wall-huge") {{
+            requirements(Category.defense, with(VeItems.aluminium, 54));
+            health = 2700;
+            size = 3;
+            researchCostMultiplier = 0.1f;
+        }};
+
+        aluminiumLeadWall = new Wall("aluminium-lead-wall") {{
+            requirements(Category.defense, with(Items.lead, 6, VeItems.aluminium, 6));
+            health = 480;
+            researchCostMultiplier = 0.2f;
+        }};
+
+        aluminiumLeadWallLarge = new Wall("aluminium-lead-wall-large") {{
+            requirements(Category.defense, with(Items.lead, 24, VeItems.aluminium, 24));
+            health = 1920;
+            size = 2;
+            researchCostMultiplier = 0.2f;
+        }};
+
+        aluminiumLeadWallHuge = new Wall("aluminium-lead-wall-huge") {{
+            requirements(Category.defense, with(Items.lead, 54, VeItems.aluminium, 54));
+            health = 4320;
+            size = 3;
+            researchCostMultiplier = 0.2f;
+        }};
+
+        isomorphicPress = new GenericCrafter("isomorphic-press") {{
+            requirements(Category.crafting, with(Items.lead, 30, VeItems.aluminium, 40));
+            outputItem = new ItemStack(Items.graphite, 2);
+            craftTime = 120f;
+            craftEffect = Fx.smeltsmoke;
+            hasItems = true;
+            size = 2;
+            ambientSound = Sounds.loopMachine;
+            ambientSoundVolume = 0.04f;
+            researchCostMultiplier = 0.1f;
+            consumeItem(Items.coal, 4);
+        }};
+
+        hydraulicPress = new GenericCrafter("hydraulic-press") {{
+            requirements(Category.crafting, with(Items.graphite, 40, Items.silicon, 20, VeItems.aluminium, 70, VeItems.chromium, 80));
+            outputItem = new ItemStack(Items.graphite, 5);
+            craftTime = 60f;
+            craftEffect = Fx.fuelburn;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water),
+                    new DrawRegion(),
+                    new DrawRegion("-rotator", -6f),
+                    new DrawPistons() {{
+                        sinMag = 2.5f;
+                        sinScl = 4.9f;
+                        sinOffset = 0f;
+                    }},
+                    new DrawRegion("-top")
+            );
+            hasItems = true;
+            hasLiquids = true;
+            hasPower = true;
+            itemCapacity = 30;
+            liquidCapacity = 80f;
+            size = 3;
+            ambientSound = Sounds.loopMachineSpin;
+            ambientSoundVolume = 0.06f;
+            researchCostMultiplier = 0.01f;
+            consumeItem(Items.coal, 8);
+            consumeLiquid(Liquids.water, 8f / 60f);
+            consumePower(96f / 60f);
+        }};
+
+        isomorphicSmelter = new GenericCrafter("isomorphic-smelter") {{
+            requirements(Category.crafting, with(Items.lead, 30, VeItems.aluminium, 45));
+            outputItem = new ItemStack(Items.silicon, 2);
+            craftTime = 40f;
+            craftEffect = Fx.smeltsmoke;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawFlame(Color.valueOf("ffef99"))
+            );
+            hasItems = true;
+            hasPower = true;
+            size = 2;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.09f;
+            researchCostMultiplier = 0.05f;
+            consumeItems(with(Items.coal, 2, VeItems.quartz, 2));
+            consumePower(48f / 60f);
+        }};
+
+        substitutionChamber = new GenericCrafter("substitution-chamber") {{
+            requirements(Category.crafting, with(Items.graphite, 85, VeItems.aluminium, 105, VeItems.silicide, 70));
+            outputItem = new ItemStack(Items.silicon, 12);
+            outputLiquid = new LiquidStack(Liquids.water, 15f / 60f);
+            craftTime = 80f;
+            craftEffect = Fx.smeltsmoke;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.hydrogen),
+                    new DrawRegion(),
+                    new DrawFlame(Color.valueOf("d1efff")) {{
+                        lightRadius = 45f;
+                        flameRadius = 3.5f;
+                        flameRadiusIn = 2.2f;
+                    }}
+            );
+            hasItems = true;
+            hasLiquids = true;
+            hasPower = true;
+            itemCapacity = 30;
+            liquidCapacity = 60f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            size = 3;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.1f;
+            researchCostMultiplier = 0.3f;
+            consumeItem(VeItems.quartz, 6);
+            consumeLiquid(Liquids.hydrogen, 9f / 60f);
+            consumePower(240f / 60f);
+        }};
+
+        quartzSeparator = new GenericCrafter("quartz-separator") {{
+            requirements(Category.crafting, with(Items.graphite, 10, VeItems.aluminium, 20));
+            outputItem = new ItemStack(VeItems.quartz, 1);
+            craftTime = 40f;
+            craftEffect = Fx.pulverize;
+            updateEffect = Fx.pulverizeSmall;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawRegion("-rotator", 3f, true),
+                    new DrawRegion("-top")
+            );
+            hasItems = true;
+            size = 1;
+            ambientSound = Sounds.loopGrind;
+            ambientSoundVolume = 0.03f;
+            researchCostMultiplier = 0.6f;
+            consumeItem(Items.sand, 2);
+        }};
+
+        quartzSeparatorLarge = new GenericCrafter("quartz-separator-large") {{
+            requirements(Category.crafting, with(Items.graphite, 40, VeItems.aluminium, 55, VeItems.chromium, 30));
+            outputItem = new ItemStack(VeItems.quartz, 4);
+            craftTime = 50f;
+            craftEffect = Fx.pulverize;
+            updateEffect = Fx.pulverizeSmall;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawRegion("-rotator1", 4f, true),
+                    new DrawRegion("-rotator2", -6f, true),
+                    new DrawRegion("-top")
+            );
+            hasItems = true;
+            hasPower = true;
+            itemCapacity = 20;
+            size = 2;
+            ambientSound = Sounds.loopGrind;
+            ambientSoundVolume = 0.07f;
+            researchCostMultiplier = 0.6f;
+            consumeItem(Items.sand, 6);
+            consumePower(42f / 60f);
+        }};
+
+        isomorphicKiln = new GenericCrafter("isomorphic-kiln") {{
+            requirements(Category.crafting, with(Items.graphite, 30, VeItems.aluminium, 55));
+            outputItem = new ItemStack(Items.metaglass, 4);
+            craftTime = 80f;
+            craftEffect = Fx.smeltsmoke;
+            drawer = new DrawMulti(
+                    new DrawDefault(),
+                    new DrawFlame(Color.valueOf("ccbcee"))
+            );
+            hasItems = true;
+            hasPower = true;
+            size = 2;
+            ambientSound = Sounds.loopSmelter;
+            ambientSoundVolume = 0.08f;
+            researchCostMultiplier = 0.3f;
+            consumeItems(with(Items.sand, 4, Items.lead, 3));
+            consumePower(48f / 60f);
+        }};
+
         isomorphicCoreShard = new CoreBlock("isomorphic-core-shard") {{
             requirements(Category.effect, BuildVisibility.coreZoneOnly, with(Items.lead, 1600, VeItems.aluminium, 1000));
             alwaysUnlocked = true;
@@ -1666,16 +2001,21 @@ public class VeBlocks {
             // shownPlanets.addAll(VePlanets.cyclant, VePlanets.maress);
         }};
 
-        rail = new Conveyor("rail") {{
-            requirements(Category.distribution, with(VeItems.aluminium, 1));
-            health = 25;
-            speed = 0.09f;
-            hasShadow = false;
-            displayedSpeed = 12f;
+        coreNucleusRoot = new CoreBlock("core-nucleus-root") {{
+            requirements(Category.effect, BuildVisibility.editorOnly, with(Items.copper, 8000, Items.lead, 8000, Items.thorium, 4000, Items.silicon, 5000));
+            alwaysUnlocked = true;
+            thrusterLength = 10f;
+            health = 6000;
+            armor = 3f;
+            size = 5;
+            unitType = UnitTypes.gamma;
+            itemCapacity = 13000;
+            unitCapModifier = 24;
+            isFirstTier = true;
+            requiresCoreZone = false;
+            rebuildable = false;
             drawTeamOverlay = false;
-            pushUnits = false;
-            drawCracks = false;
-            // shownPlanets.addAll(VePlanets.cyclant, VePlanets.maress);
+            researchCostMultiplier = 0f;
         }};
 
     }

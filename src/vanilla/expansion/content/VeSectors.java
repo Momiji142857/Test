@@ -1,9 +1,13 @@
 package vanilla.expansion.content;
 
+import mindustry.content.Planets;
 import mindustry.type.SectorPreset;
 
 public class VeSectors {
     public static SectorPreset
+            // Serpulo
+            classic175, classic222, classic223, classic85, classic133, classic195, classic7,
+
             // cyclant
             barrierHill, carbonRelics, wetlandMiningfield, intervalley,
                     volcanicTop, fortPort, gobi, fungusFactory, shaleQuarry, unitLaboratory,
@@ -14,6 +18,66 @@ public class VeSectors {
 
     public static void load() {
 
+        // Serpulo
+        classic175 = new SectorPreset("classic-175", Planets.serpulo, 175) {{
+            captureWave = 25;
+            difficulty = 3f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+        }};
+
+        classic222 = new SectorPreset("classic-222", Planets.serpulo, 222) {{
+            captureWave = 25;
+            difficulty = 4f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+        }};
+
+        classic223 = new SectorPreset("classic-223", Planets.serpulo, 218) {{
+            captureWave = 25;
+            difficulty = 4f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+            originalPosition = 223;
+        }};
+
+        classic85 = new SectorPreset("classic-85", Planets.serpulo, 125) {{
+            captureWave = 25;
+            difficulty = 4f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+            originalPosition = 85;
+        }};
+
+        classic133 = new SectorPreset("classic-133", Planets.serpulo, 133) {{
+            captureWave = 0;
+            difficulty = 6f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+        }};
+
+        classic195 = new SectorPreset("classic-195", Planets.serpulo, 195) {{
+            captureWave = 25;
+            difficulty = 4f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+        }};
+
+        classic7 = new SectorPreset("classic-7", Planets.serpulo, 7) {{
+            captureWave = 35;
+            difficulty = 6f;
+            isLastSector = false;
+            allowLaunchSchematics = true;
+            allowLaunchLoadout = true;
+        }};
+
+        //cyclant
         barrierHill = new SectorPreset("barrier-hill", VePlanets.cyclant, 170) {{
             alwaysUnlocked = true;
             captureWave = 10;
@@ -176,7 +240,7 @@ public class VeSectors {
 
         /*
         Sector = new SectorPreset("", Planets., ) {{
-            captureWave = 0; // 0
+            captureWave = ; // 0
             difficulty = f; // 0-10
             startWaveTimeMultiplier = f; // 2f
             addStartingItems = ; // false
@@ -188,6 +252,7 @@ public class VeSectors {
             allowLaunchSchematics = ; // false
             allowLaunchLoadout = ; // false
             attackAfterWaves = ; // false
+            originalPosition = ;
         }};
          */
 

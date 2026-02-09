@@ -1,14 +1,20 @@
 package vanilla.expansion.content;
 
 import arc.graphics.Color;
+import mindustry.content.Planets;
+import mindustry.content.TechTree;
 import mindustry.type.Item;
 
 public class VeItems {
     public static Item
             aluminium, quartz, catalyzon, silicide, salt, plantMatter, chromium, sodium,
-            carbonShaleCobble, shaleCobble, nitroalkoss, cobalt, fibralt, fusionFuel,
-            capacitor, warpNucleus, redSoil, ferrum, reflectorMatter, ferricShaleCobble,
-            silver, astroPlate, phecteel, melonDirt, sugar;
+                    carbonShaleCobble, shaleCobble, nitroalkoss, cobalt, fibralt, fusionFuel,
+                    capacitor, warpNucleus,
+
+            redSoil, ferrum, reflectorMatter, ferricShaleCobble,
+                    silver, astroPlate, phecteel,
+
+            melonDirt, sugar;
 
     public static void load() {
 
@@ -46,7 +52,6 @@ public class VeItems {
             flammability = 1.05f;
             hardness = 8;
             cost = 0.1f;
-
         }};
 
         chromium = new Item("chromium", Color.valueOf("ff6b41")) {{
@@ -72,7 +77,6 @@ public class VeItems {
             hardness = 7;
             cost = 0.8f;
             lowPriority = true;
-
         }};
 
         nitroalkoss = new Item("nitroalkoss", Color.valueOf("ff8a67")) {{
@@ -144,11 +148,12 @@ public class VeItems {
         }};
 
         astroPlate = new Item("astro-plate", Color.valueOf("bfbba9")) {{
+            flammability = -0.5f;
             healthScaling = 2f;
         }};
 
         phecteel = new Item("phecteel", Color.valueOf("00ffce")) {{
-            explosiveness = 0.7f;
+            explosiveness = 0.5f;
             charge = 1.5f;
             cost = 1.2f;
             frames = 18;
@@ -168,15 +173,59 @@ public class VeItems {
 
         /*
         item = new Item("", Color.valueOf("")) {{
-            explosiveness = f; // 0f
-            flammability = f; // 0f
-            radioactivity = f;
-            charge = f; // 0f
-            hardness = ; // 0
-            cost = f; // 1f
-            lowPriority = ;
+            explosiveness = f; // 0f 爆炸性
+            flammability = f; // 0f 燃烧性
+            radioactivity = f; // 放射性
+            charge = f; // 0f 放电性
+            hardness = ; // 0 硬度
+            cost = f; // 1f 建造时间花费
+            healthScaling = f; // 0f 建筑血量系数
+            lowPriority = ; // 被挖掘时, 是否是最低优先级
+            buildable = ; // true 该物品进入核心时能否被焚毁
+            hidden = ; // false 是否隐藏
+
+            // 动态贴图
+            frames = ; // 0 是否具有动态贴图
+            transitionFrames = ; // 0 动态贴图每帧之间的过度帧数量
+            frameTime = f; // 5f 动画之间的间隔时间
+
+            // UnlockableContent
+            alwaysUnlocked = ; // false 是否在科技树中始终解锁
+            inlineDescription = ; // true 是否在研究界面显示描述
+            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
+            hideDatabase = ; // false 是否在核心数据库中隐藏
+            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
+            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
+            databaseTabs.add(Planets.);
         }};
-         */
+        */
+
+        /*
+        item = new Item("", Color.valueOf("")) {{
+            explosiveness = f; // 0f 爆炸性
+            flammability = f; // 0f 燃烧性
+            radioactivity = f; // 放射性
+            charge = f; // 0f 放电性
+            hardness = ; // 0 硬度
+            cost = f; // 1f 建造时间花费
+            healthScaling = f; // 0f 建筑血量系数
+            lowPriority = ; // 被挖掘时, 是否是最低优先级
+            frames = ; // 0 是否具有动态贴图
+            transitionFrames = ; // 0 动态贴图每帧之间的过度帧数量
+            frameTime = f; // 5f 动画之间的间隔时间
+            buildable = ; // true 该物品进入核心时能否被焚毁
+            hidden = ; // false 是否隐藏
+
+            // UnlockableContent
+            alwaysUnlocked = ; // false 是否在科技树中始终解锁
+            inlineDescription = ; // true 是否在研究界面显示描述
+            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
+            hideDatabase = ; // false 是否在核心数据库中隐藏
+            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
+            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
+            databaseTabs.add(Planets.);
+        }};
+        */
 
     }
 }
