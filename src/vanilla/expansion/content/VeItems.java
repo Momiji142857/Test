@@ -12,7 +12,7 @@ public class VeItems {
                     capacitor, warpNucleus,
 
             redSoil, ferrum, reflectorMatter, ferricShaleCobble,
-                    silver, astroPlate, phecteel,
+                    silver, tantalum, astroPlate, phecteel,
 
             melonDirt, sugar;
 
@@ -147,6 +147,14 @@ public class VeItems {
             cost = 0.5f;
         }};
 
+        tantalum = new Item("tantalum", Color.valueOf("6d897b")) {{
+            flammability = -0.75f;
+            charge = 0.25f;
+            hardness = 4;
+            cost = 0.6f;
+            healthScaling = 1f;
+        }};
+
         astroPlate = new Item("astro-plate", Color.valueOf("bfbba9")) {{
             flammability = -0.5f;
             healthScaling = 2f;
@@ -170,62 +178,6 @@ public class VeItems {
             cost = 0.2f;
             lowPriority = true;
         }};
-
-        /*
-        item = new Item("", Color.valueOf("")) {{
-            explosiveness = f; // 0f 爆炸性
-            flammability = f; // 0f 燃烧性
-            radioactivity = f; // 放射性
-            charge = f; // 0f 放电性
-            hardness = ; // 0 硬度
-            cost = f; // 1f 建造时间花费
-            healthScaling = f; // 0f 建筑血量系数
-            lowPriority = ; // 被挖掘时, 是否是最低优先级
-            buildable = ; // true 该物品进入核心时能否被焚毁
-            hidden = ; // false 是否隐藏
-
-            // 动态贴图
-            frames = ; // 0 是否具有动态贴图
-            transitionFrames = ; // 0 动态贴图每帧之间的过度帧数量
-            frameTime = f; // 5f 动画之间的间隔时间
-
-            // UnlockableContent
-            alwaysUnlocked = ; // false 是否在科技树中始终解锁
-            inlineDescription = ; // true 是否在研究界面显示描述
-            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
-            hideDatabase = ; // false 是否在核心数据库中隐藏
-            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
-            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
-            databaseTabs.add(Planets.);
-        }};
-        */
-
-        /*
-        item = new Item("", Color.valueOf("")) {{
-            explosiveness = f; // 0f 爆炸性
-            flammability = f; // 0f 燃烧性
-            radioactivity = f; // 放射性
-            charge = f; // 0f 放电性
-            hardness = ; // 0 硬度
-            cost = f; // 1f 建造时间花费
-            healthScaling = f; // 0f 建筑血量系数
-            lowPriority = ; // 被挖掘时, 是否是最低优先级
-            frames = ; // 0 是否具有动态贴图
-            transitionFrames = ; // 0 动态贴图每帧之间的过度帧数量
-            frameTime = f; // 5f 动画之间的间隔时间
-            buildable = ; // true 该物品进入核心时能否被焚毁
-            hidden = ; // false 是否隐藏
-
-            // UnlockableContent
-            alwaysUnlocked = ; // false 是否在科技树中始终解锁
-            inlineDescription = ; // true 是否在研究界面显示描述
-            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
-            hideDatabase = ; // false 是否在核心数据库中隐藏
-            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
-            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
-            databaseTabs.add(Planets.);
-        }};
-        */
 
     }
 }

@@ -240,21 +240,23 @@ public class VeSectors {
 
         /*
         Sector = new SectorPreset("", Planets., ) {{
-            captureWave = ; // 0
-            difficulty = f; // 0-10
-            startWaveTimeMultiplier = f; // 2f
-            addStartingItems = ; // false
-            noLighting = ; // false
-            isLastSector = ;
-            requireUnlock = ; // true
-            showSectorLandInfo = ; // true
-            overrideLaunchDefaults = ; // false
-            allowLaunchSchematics = ; // false
-            allowLaunchLoadout = ; // false
-            attackAfterWaves = ; // false
-            originalPosition = ;
+            captureWave = ; // 0 占领波次
+            difficulty = f; // 0-10 难度
+            startWaveTimeMultiplier = f; // 2f 起始波次时间倍率
+            addStartingItems = ; // false 是否添加起始物品
+            noLighting = ; // false 是否无光照
+            isLastSector = ; // 是否为最终区域
+            requireUnlock = ; // true 是否需要解锁
+            showHidden = ; // false 是否显示隐藏区域. 即使是一个始终解锁的隐藏区域，是否也显示其图标和名称 (后续可能会更改)
+            showSectorLandInfo = ; // true 发射时是否显示详细信息
+            overrideLaunchDefaults = ; // false 是否覆盖默认发射配置
+            allowLaunchSchematics = ; // false 能否使用发射蓝图
+            allowLaunchLoadout = ; // false 是否允许自定义携带的物品
+            attackAfterWaves = ; // false 波次结束后是否转为进攻模式
+            originalPosition = ; // 区块原始位置
+            shieldSectors = ; // 护盾区域列表. 仅当列表内的区块全部占领之后才解锁
+            fileName = ""; // 文件名
         }};
-         */
-
+        */
     };
 }

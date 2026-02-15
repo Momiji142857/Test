@@ -37,7 +37,7 @@ public class SetShownPlanets {
                 VeItems.aluminium, VeItems.quartz, VeItems.catalyzon, VeItems.silicide, VeItems.salt,
                 VeItems.chromium, VeItems.sodium, VeItems.nitroalkoss, VeItems.fibralt, VeItems.fusionFuel,
                 VeItems.capacitor, VeItems.warpNucleus, VeItems.redSoil, VeItems.ferrum, VeItems.reflectorMatter,
-                VeItems.ferricShaleCobble, VeItems.silver, VeItems.astroPlate, VeItems.phecteel
+                VeItems.ferricShaleCobble, VeItems.silver, VeItems.tantalum, VeItems.astroPlate, VeItems.phecteel
         );
 
         // Liquids

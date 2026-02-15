@@ -10,6 +10,7 @@ import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.abilities.ShieldArcAbility;
+import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
@@ -19,9 +20,11 @@ import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootBarrel;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.units.WeaponMount;
+import mindustry.gen.MechUnit;
 import mindustry.gen.PayloadUnit;
 import mindustry.gen.Sounds;
 import mindustry.gen.UnitEntity;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
@@ -122,6 +125,7 @@ public class VeUnitTypes {
             // 潜行小游戏
             zenithSentry,
             // 其他
+
             iotaStealth, turretUnitBuildTower, coronaSpawn, magneticSpawn, metaSpawn, mgsSpotIdea, mgsSpotNotice, mgsSpot, omegaAngry1, omegaAngry2,
                     omegaObserver, speaker, surgeOfficerHuh, surgeOfficer, thoriumBomberCircle, zenithAudience, zenithMelondropper, zenithPilot;
 
@@ -830,6 +834,87 @@ public class VeUnitTypes {
             );
         }};
 
+        /*
+        huangdi = new UnitType("huang-di") {{
+            constructor = MechUnit::create;
+            // 属性
+            health = 267000f; // 200f 生命值
+            armor = 40f; // 0f 护甲
+            hitSize = 36f; // 6f 碰撞箱边长大小
+            canDrown = false; // true 能否被淹没
+            // drownTimeMultiplier = 13f; // -1f 沉没速度倍率
+            researchCostMultiplier = 1f; // 50f 研究成本倍数
+            speed = 0.55f; // 1.1f 移动速度
+            rotateSpeed = 1.45f; // 5f 身体转向速度
+            drag = 0.06f; // 0.3f 移动阻力与移动速度的比例
+            accel = 0.1f; // 0.5f 加速度与移动速度的比例
+            stepShake = 4.6f; // -1f 单位行走时的震动强度
+            mechSideSway = 1.4f; // 0.54f 机甲侧向摆动的幅度
+            mechFrontSway = 2.3f; // 0.1f 机甲前后摆动的幅度
+            immunities.add(StatusEffects.disarmed); // 免疫的状态效果
+            ammoCapacity = 400; // -1 弹药容量
+            ammoType = new ItemAmmoType(Items.copper); // 暗合金
+            abilities.addAll(
+                    new ShieldArcAbility() {{
+                        whenShooting = true;
+                        radius = 32f;
+                        width = 5.5f;
+                        max = 20000f;
+                        regen = 15f;
+                        cooldown = 240f;
+                        angle = 80f;
+                        angleOffset = 0f;
+                    }},
+                    new ShieldArcAbility() {{
+                        whenShooting = false;
+                        radius = 45f;
+                        width = 5.5f;
+                        max = 10000f;
+                        regen = 11f;
+                        cooldown = 600f;
+                        angle = 80f;
+                        angleOffset = 95f;
+                    }},
+                    new ShieldArcAbility() {{
+                        whenShooting = false;
+                        radius = 45f;
+                        width = 5.5f;
+                        max = 10000f;
+                        regen = 11f;
+                        cooldown = 600f;
+                        angle = 80f;
+                        angleOffset = -95f;
+                    }},
+                    new StatusFieldAbility(StatusEffects.wet, 240f, 1800f, 0f) {{
+                        applyEffect = Fx.none;
+                        activeEffect = new ParticleEffect() {{
+                            particles = 1;
+                            baseLength = 50f;
+                            length = -50f;
+                            lifetime = 10f;
+                            line = true;
+                            strokeFrom = 2f;
+                            strokeTo = 1.8f;
+                            lenFrom = 20f;
+                            lenTo = 0f;
+                            interp = Interp.fastSlow;
+                            sizeInterp = Interp.pow3In;
+                            colorFrom = Color.valueOf("d06b53ff");
+                            colorTo = Color.valueOf("ffa665ff");
+                        }};
+                    }},
+                    new StatusFieldAbility(StatusEffects.muddy, 300f, 1200f, 0f) {{
+                        applyEffect =  Fx.none;
+                        activeEffect = Fx.none;
+                    }},
+                    new StatusFieldAbility(StatusEffects.freezing, 10f, 600f, 0f) {{
+                        applyEffect =  Fx.none;
+                        activeEffect = Fx.none;
+                    }}
+            );
+        }};
+        */
+
         // Units
         /*
         unit = new UnitType("") {{
@@ -899,7 +984,8 @@ public class VeUnitTypes {
             drag = f; // 0.3f 移动阻力与移动速度的比例
             accel = f; // 0.5f 加速度与移动速度的比例
             riseSpeed = f; // 0.08f 助推时上升速度
-            fallSpeed = f; // 0.018f 无助推时下落速度
+            descentSpeed = f; // 0.08f 无助推时下落速度
+            fallSpeed = f; // 0.018f 死亡时的坠落速度
             canBoost = ; // false 能否助推
             boostWhenBuilding = ; // true 处于建造者AI时助推
             boostWhenMining = ; // true 处于挖矿AI时助推
@@ -1156,7 +1242,7 @@ public class VeUnitTypes {
         */
 
         /*
-        a = new UnitType("") {{
+        unit = new UnitType("") {{
             constructor = UnitEntity::create;
 
 //            "flying": UnitEntity::create;
@@ -1187,7 +1273,8 @@ public class VeUnitTypes {
             stepShake = f; // -1f 单位行走时的震动强度
             rippleScale = f; // 1f 行走时扬起的尘埃云大小
             riseSpeed = f; // 0.08f 助推时上升速度
-            fallSpeed = f; // 0.018f 无助推时下落速度
+            descentSpeed = f; // 0.08f 无助推时下落速度
+            fallSpeed = f; // 0.018f 死亡时的坠落速度
             missileAccelTime = f; // 0f 导弹加速到全速所须时间
             health = f; // 200f 生命值
             armor = f; // 0f 护甲
