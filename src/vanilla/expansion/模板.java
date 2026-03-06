@@ -458,7 +458,7 @@
             trailScl = f; // 1f 轨迹缩放比例
             trailLength = ; // 0 引擎尾迹或波浪尾迹长度
             trailColor = Color.valueOf(""); // 尾迹颜色
-            //光照
+            // 光照
             lightRadius = f; // -1f 光照半径
             lightOpacity = f; // 0.6f 光照不透明度
             lightColor = Color.valueOf(""); // fbd367 单位产生的光照的颜色
@@ -1142,12 +1142,12 @@
 
             // Block
             flags = EnumSet.of(BlockFlag.drill); // 方块的标志集合，用于AI索引
+            update = true; // 该方块是否具有持续更新的方块实体
             solid = true; // 是否为实心方块
             group = BlockGroup.drills; // 属于哪个组, 同组方块可以相互替换
             envEnabled |= Env.space; // Env.terrestrial 可运行环境
             hasItems = true; // 是否拥有物品模块
             hasLiquids = true; // 是否拥有液体模块
-            update = true; // 该方块是否具有持续更新的方块实体
             ambientSound = Sounds.loopDrill; // none 空闲时发出的声音
             ambientSoundVolume = 0.019f; // 0.05f 空闲音效音量
 
@@ -1183,12 +1183,12 @@
 
             // Block
             flags = EnumSet.of(BlockFlag.drill); // 方块的标志集合，用于AI索引
+            update = true; // 该方块是否具有持续更新的方块实体
             solid = true; // 是否为实心方块
             rotate = true; // 是否可旋转
             ignoreLineRotation = true; // false 如果为true, 该方块的朝向不会朝向拖动方向
             envEnabled |= Env.space; // Env.terrestrial 可运行环境
             hasItems = true; // 是否拥有物品模块
-            update = true; // 该方块是否具有持续更新的方块实体
             drawArrow = false; // true 是否绘制旋转箭头
             ambientSound = Sounds.loopMineBeam; // none 空闲时发出的声音
             ambientSoundVolume = 0.05f; // 0.05f 空闲音效音量 -
@@ -1209,6 +1209,306 @@
             squareSprite = ; // true 贴图是否为完整方块
 
             researchCostMultiplier = f; // 1f 研究成本倍数
+        }};
+        */
+
+// Distribution
+        /*
+        distribution = new ("") {{
+            // = new Conveyor("") {{
+                // = new ArmoredConveyor("") {{
+                noSideBlend = true;
+
+            itemSpace = f; // 0.4f 物品之间的最小间隔
+            capacity = ; // 3 每节传送带最多容纳的物品数量
+            speed = f; // 0f 运输速率
+            displayedSpeed = f; // 0f 显示的速率
+            pushUnits = ; // true 是否推动站在上面的单位
+            junctionReplacement = Blocks.; // 交叉器
+            bridgeReplacement = Blocks.; // 桥
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            rotate = true; // 是否可旋转
+            noUpdateDisabled = false; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = capacity; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
+            ambientSoundVolume = 0.0022f; // 0.05f 空闲音效音量
+
+            // = new StackConveyor("") {{
+            glowAlpha = f; // 1f 发光透明度
+            glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
+            baseEfficiency = f; // 0f 基础运力倍率, 强化后倍率为 this +1
+            speed = f; // 0f 运输速率, 运力 = 单次装载数 * this * 60f
+            outputRouter = ; // true 是否输出到路由器
+            recharge = f; // 2f 填满一条线所需的最小装载点数量
+            loadEffect = Fx.; // conveyorPoof 装载时的粒子效果
+            unloadEffect = Fx.; // conveyorPoof 卸载时的粒子效果
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 10; // 10 物品容量
+            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
+            ambientSoundVolume = 0.004f; // 0.05f 空闲音效音量
+
+            // = new Junction("") {{
+            speed = f; // 26 物品经过需要的时间
+            capacity = ; // 6 物品容量
+            displayedSpeed = f; // 13f 显示的速率
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new ItemBridge("") {{
+                // = new BufferedItemBridge("") {{
+                speed = f; // 40f 物品经过需要的时间
+                bufferCapacity = ; // 50 缓冲区容量
+                displayedSpeed = f; // 11f 显示给玩家的速度
+                // Block
+                canOverdrive = true; // true 能否超速
+                hasItems = true; // 是否拥有物品模块
+                hasPower = false; // 是否拥有电力模块
+
+            range = ; // 最大连接距离
+            transportTime = f; // 物品从一端传输到另一端所需的时间
+            fadeIn = ; // true 是否渐显
+            moveArrows = ; // true 是否显示移动的箭头
+            pulse = ; // false 是否启用脉冲效果
+            arrowSpacing = f; // 4f 箭头之间的间隔距离
+            arrowOffset = f; // 2f 箭头位置的偏移量
+            arrowPeriod = f; // 0.4f 箭头动画周期
+            arrowTimeScl = f; // 6.2f 箭头动画时间缩放
+            bridgeWidth = f; // 6.5f 桥身绘制的宽度
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            delayLandingConfig = true; // 如果为true, 则在着陆构建动画中, 该方块的配置操作会被延迟, 未来可能会被移除
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            copyConfig = false; // true 能否通过选取操作复制配置
+            allowConfigInventory = false; // true 物品库存是否与配置界面一起显示
+            ignoreResizeConfig = true; // 如果为true, 在地图大小改变时, 不会有名为transform的点配置
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            configurable = true; // false 能否被逻辑配置
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 10; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            hasPower = true; // 是否拥有电力模块
+
+            // = new Sorter("") {{
+            invert = ; // 效果反向
+            // Block
+            update = false; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true;  // 能否被点击并打开配置界面
+            unloadable = false; // true 装卸器能否作用于该方块
+            instantTransfer = true; // false 是否支持瞬时传输(光传)
+
+            // = new Router("") {{
+            speed = f; // 8f
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new OverflowGate("") {{
+            speed = f; // 1f
+            invert = ; // false 效果反向
+            // Block
+            canOverdrive = false; // true 能否超速
+            update = false; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            instantTransfer = true; // false 是否支持瞬时传输(光传)
+
+            // = new Unloader("") {{
+            speed = f; // 1f 每次装卸的时间间隔
+            allowCoreUnload = ; // true 能否从核心卸载
+            // Block
+            health = 70; // -1 生命值, 跳过scaledHealth
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new Duct("") {{
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            armored = ; // false 是否具有装甲
+            transparentColor = Color.valueOf(""); // 管道颜色
+            bridgeReplacement = Blocks.; // 交叉器
+            junctionReplacement = Blocks.; // 桥
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            noSideBlend = true; // false 是否接受来自侧面的输入
+            isDuct = true; // false 该方块是否为管道
+
+            // = new DuctJunction("") {{
+            transparentColor = Color.valueOf(""); // 管道颜色
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            floating = true; // false 是否可以放置在液体边缘
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new DuctBridge("") {{
+            speed = 5f; // 物品运输的时间间隔
+            // Block-1
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 4; // 10 物品容量
+            isDuct = true; // false 该方块是否为管道
+            // DirectionBridge
+            range = ; // 4 最大连接距离
+            // Block-2
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            drawArrow = false; // true 是否绘制旋转箭头
+
+            // = new DuctRouter("") {{
+                // = new StackRouter("") {{
+                baseEfficiency = f; // 0f 基础效率
+                glowAlpha = f; // 1f 发光透明度
+                glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
+                // Block
+                itemCapacity = 10; // 10 物品容量
+
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new OverflowDuct("") {{
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            invert = ; // false 效果反向
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new DirectionalUnloader("") {{
+            speed = f; // 1f 两次物品运输之间的时间间隔
+            allowCoreUnload = ; // false 能否从核心卸载
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            rotate = true; // 是否可旋转
+            envDisabled = Env.none; // 0 无法运行的环境
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            isDuct = true; // false 该方块是否为管道
+
+            // = new MassDriver("") {{
+            range = f; // 最大传输距离
+            rotateSpeed = f; // 5f 旋转速度
+            translation = f; // 7f 后坐力位移
+            minDistribute = ; // 10 最小发送数量
+            knockback = f; // 4f 后坐力强度
+            reload = f; // 100f 装填时间
+            bullet = new MassDriverBolt(); // 发射的子弹类型
+            bulletSpeed = f; // 5.5f 子弹飞行速度
+            bulletLifetime = f; // 200f 子弹最长存在时间
+            shootEffect = Fx.; // shootBig2 发射特效
+            smokeEffect = Fx.; // shootBigSmoke2 烟雾特效
+            receiveEffect = Fx.; // mineBig 接收特效
+            shootSound = Sounds.; // massdriver 发射音效
+            receiveSound = Sounds.; // massdriverReceive 接收音效
+            shootSoundVolume = f; // 0.5f 发射音量
+            shake = f; // 3f 屏幕震动强度
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            sync = true; // 是否需要周期性的在网络中同步
+            envEnabled |= Env.space; // Env.terrestrial 可运行环境
+            configurable = true; // 能否被点击并打开配置界面
+            hasItems = true; // 是否拥有物品模块
+            hasPower = true; // 是否拥有电力模块
+            outlineIcon = true; // false 是否有图标轮廓
         }};
         */
 
@@ -1257,6 +1557,7 @@
             // 特殊属性
             inEditor = ; // true 编辑器中是否可见
             editorConfigurable = ; // 是否可在编辑器中配置
+            update = ; // 该方块是否具有持续更新的方块实体
             solid = ; // 是否为实体
             solidifes = ; // 是否为实心方块
             teamPassable = ; // 如果为true, 则被视为同阵营的非实体方块
@@ -1347,7 +1648,6 @@
             outputsLiquid = ; // false 是否输出液体
             liquidPressure = f; // 1f 液体输出速率
             displayFlow = ; // true 显示液体传输速率
-            isDuct = ; // false 该方块是否为液体管道
             // 电力
             hasPower = ; // 是否拥有电力模块
             consumesPower = ; // true 是否被视为耗电单元
@@ -1359,11 +1659,12 @@
             acceptsUnitPayloads = ; // false 能否输入载荷
             acceptsPayload = ; // false 载荷是否尝试进入该方块
             // 输入输出
+            acceptsItems = ; // false 是否与附近的传送带连接
             alwaysAllowDeposit = ; // false 是否忽略onlyDepositCore规则
             outputFacing = ; // true 是否按方块朝向输出
             noSideBlend = ; // false 是否接受来自侧面的输入
+            isDuct = ; // false 该方块是否为管道
             allowResupply = ; // false 单位能否从该方块拿取物品
-            acceptsItems = ; // false 是否与附近的传送带连接
             instantTransfer = ; // false 是否支持瞬时传输(光传)
             dumpTime = ; // 5 尝试输出的时间间隔, 填5即每秒尝试输出12次
             consumeLiquid(Liquids., f / 60f); // + .boost(); 消耗的液体 + 强化
@@ -1374,7 +1675,6 @@
             consumeItems(ItemStack.with(Items., , Items., ));
 
             // 渲染
-            update = ; // 该方块是否具有持续更新的方块实体
             variants = ; // 0 不同的变体贴图数量
             drawArrow = ; // true 是否绘制旋转箭头
             drawTeamOverlay = ; // true 是否绘制队伍标识
@@ -1504,7 +1804,7 @@
             update = ; // 该方块是否具有持续更新的方块实体
             destructible = ; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
             unloadable = ; // true 装卸器能否作用于该方块
-            isDuct = ; // false 该方块是否为液体管道
+            isDuct = ; // false 该方块是否为管道
             allowResupply = ; // false 单位能否从该方块拿取物品
             solid = ; // 是否为实体
             solidifes = ; // 是否为实心方块
@@ -1839,6 +2139,127 @@
             */
 
 
+// Effect
+        /*
+        effect = new ParticleEffect() {{
+            // = new ParticleEffect() {{
+            colorFrom = Color.valueOf(""); // Color.white.cpy() 粒子起始颜色
+            colorTo = Color.valueOf(""); // Color.white.cpy() 粒子结束颜色
+            particles = ; // 6 粒子数量
+            randLength = ; // true 是否随机粒子长度
+            casingFlip = ; // 是否支持弹壳翻转效果
+            cone = f; // 180f 粒子发射锥形角度
+            length = f; // 20f 粒子最大长度/距离
+            baseLength = f; // 0f 粒子基础长度
+            interp = Interp.; // linear 粒子大小/长度变化的插值方式
+            sizeInterp = ; // null 粒子大小的专用插值
+            offsetX = f; // 粒子位置偏移
+            offsetY = f;
+            lightScl = f; // 2f 光照大小缩放
+            lightOpacity = f; // 0.6f 光照透明度
+            lightColor = Color.valueOf(""); // 光照颜色
+            //region only
+            spin = f; // 每帧旋转角度
+            sizeFrom = f; // 2f 贴图起始大小
+            sizeTo = f; // 0f 贴图结束大小
+            sizeChangeStart = f; // 0f 贴图开始改变大小的延迟时间
+            useRotation = ; // true 是否继承父级旋转
+            offset = f; // 0 旋转角度偏移
+            region = ; // "circle" 使用的纹理名称
+            // line only
+            line = ; // 是否使用线条模式
+            strokeFrom = f; // 2f 线条起始粗细
+            strokeTo = f; // 0f 线条结束粗细
+            lenFrom = f; // 4f 线条起始长度
+            lenTo = f; // 2f 线条结束长度
+            cap = ; // true 是否绘制端点
+
+            // = new ExplosionEffect() {{
+            // 冲击波
+            waveColor = Color.valueOf(""); // ffd2ae 冲击波颜色
+            waveLife = f; // 6f 冲击波存在时间
+            waveStroke = f; // 3f 冲击波线条粗细
+            waveRad = f; // 15f 冲击波最大半径
+            waveRadBase = f; // 2f 冲击波基础半径
+            // 烟雾
+            smokeColor = Color.valueOf(""); // Color.gray 烟雾颜色
+            smokeSize = f; // 4f 烟雾最终大小
+            smokeSizeBase = f; // 0.5f 烟雾基础大小
+            smokeRad = f; // 23f 烟雾扩散半径
+            smokes = ; // 5 烟雾数量
+            // 火花
+            sparkColor = Color.valueOf(""); // e58956 火花颜色
+            sparkStroke = f; // 1f 火花线条粗细
+            sparkRad = f; // 23f 火花扩散半径
+            sparkLen = f; // 3f 火花长度
+            sparks = ; // 4 火花数量
+            // Effect
+            clip = 100f; // 特效的裁剪范围
+            lifetime = 22f; // 50f 特效存在时间
+
+            // = new MultiEffect(各个粒子效果);
+
+            // = new RadialEffect(effect, amount, spacing, lengthOffset, effectRotationOffset) {{
+            effect = Fx.; // Fx.none
+            rotationSpacing = f; // 90f 特效之间的旋转间隔角度
+            rotationOffset = f; // 0f 整体旋转偏移角度
+            effectRotationOffset = f; // 0f 特效自身的旋转偏移
+            lengthOffset = f; // 0f 特效离中心的距离偏移
+            amount = ; // 4 特效数量
+            // Effect
+            clip = 100f; // 特效的裁剪范围
+
+            // = new SeqEffect(按顺序的各个粒子效果);
+
+            // = new SoundEffect(sound, effect) {{
+            sound = Sounds.; // none 播放的音效
+            minPitch = f; // 0.8f 最小音调
+            maxPitch = f; // 1.2f 最大音调
+            minVolume = f; // 1f 最小音量
+            maxVolume = f; // 1f 最大音量
+            effect = Fx.; // 粒子效果
+            // Effect
+            startDelay = -1f; // 特效开始前的延迟时间
+
+            // = new WaveEffect() {{
+            colorFrom = Color.valueOf(""); // Color.white.cpy() 光环起始颜色
+            colorTo = Color.valueOf(""); // Color.white.cpy() 光环结束颜色
+            lightColor = Color.valueOf(""); // 光照颜色
+            sizeFrom = f; // 0f 光环起始大小
+            sizeTo = f; // 100f 光环结束大小
+            lightScl = f; // 3f 光照大小缩放
+            lightOpacity = f; // 0.8f 光照透明度
+            sides = f; // -1 多边形边数
+            rotation = f; // 0f 整体旋转角度
+            strokeFrom = f; // 2f 起始线条粗细
+            strokeTo = f; // 0f 结束线条粗细
+            interp = Interp.; // linear 大小/颜色变化的插值方式
+            lightInterp = Interp.; // reverse 光照的专用插值
+            offsetX = f; // 光环中心偏移量
+            offsetY = f;
+            // Effect
+            clip = Math.max(clip, Math.max(sizeFrom, sizeTo) + Math.max(strokeFrom, strokeTo)); // 特效的裁剪范围
+
+            // = new WrapEffect(effect, color, rotation) {{
+            effect = Fx.; // none
+            color = ; Color.valueOf("")// Color.white.cpy()
+            rotation = f; // 0f 整体旋转角度
+
+            // = new Effect(life, clipsize, renderer) {{
+            shakeFalloff = f; // 10000f 屏幕震动衰减系数
+            renderer = ; // 特效的渲染逻辑
+            lifetime = f; // 50f 特效存在时间
+            clip = f; // 特效的裁剪范围
+            startDelay = f; // 特效开始前的延迟时间
+            baseRotation = f; // 基础旋转角度
+            followParent = ; // true 是否跟随父级单位移动
+            rotWithParent = ; // 是否跟随父级单位旋转
+            layer = f; // Layer.effect 特效的渲染层
+            layerDuration = f; // 特定层的持续时间
+        }};
+        */
+
+
 // Bullet
         /*
         bullet = new () {{
@@ -2052,36 +2473,3 @@
 
         }};
          */
-
-
-// Effect
-        /*
-        Effect = new () {{
-            // new WaveEffect() {{
-            colorFrom = Color.valueOf("");
-            colorTo = Color.valueOf("");
-            lightColor = Color.valueOf("");
-            sizeFrom = f; // 0f
-            sizeTo = f; // 100f
-            lightScl = f; // 3f
-            lightOpacity = f; // 0.8f
-            sides = ; // -1
-            rotation = f; // 0f
-            strokeFrom = f; // 2f
-            strokeTo = f; // 0f
-            interp = Interp.; // linear
-            lightInterp = Interp.; // reverse
-            offsetX = f;
-            offsetY = f;
-
-            lifetime = f; // 50f
-            clip = f;
-            startDelay = f;
-            baseRotation = ;
-            followParent = ; // true
-            rotWithParent = ;
-            layer = f; // Layer.effect
-            layerDuration = f;
-        }};
-         */
-

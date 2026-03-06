@@ -1,10 +1,15 @@
 package vanilla.expansion.content;
 
+import arc.audio.RandomSound;
+import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import mindustry.content.*;
+import mindustry.entities.Effect;
+import mindustry.entities.TargetPriority;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.DrawPart;
@@ -15,6 +20,8 @@ import mindustry.entities.pattern.ShootPattern;
 import mindustry.gen.Sounds;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.mod.ContentParser;
 import mindustry.type.Category;
 import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
@@ -25,9 +32,11 @@ import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
+import mindustry.world.blocks.storage.Unloader;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import vanilla.expansion.VanillaExpansion;
@@ -87,8 +96,7 @@ public class VeBlocks {
 
             //transport - serpulo
             armoredBridgeConveyor, armoredRouter, armoredOverflowGate, armoredUnderflowGate, armoredUnloader,
-                    silicideArmoredDuct,
-                    silicideJunction, silicideBridgeConveyor, silicideSorter, silicideInvertedSorter, silicideRouter, silicideDistributor, silicideOverflowGate, silicideUnderflowGate, silicideUnloader,
+                    silicideDuct, silicideArmoredDuct, silicideJunction, silicideBridgeConveyor, silicideSorter, silicideInvertedSorter, silicideRouter, silicideDistributor, silicideOverflowGate, silicideUnderflowGate, silicideUnloader,
 
             //transport - erekir
             ductJunction,
@@ -1813,16 +1821,26 @@ public class VeBlocks {
             researchCostMultiplier = 0.01f;
         }};
 
-
-        /*
         beamDrill = new Drill("beam-drill") {{
             requirements(Category.production, ItemStack.with(Items.lead, 60, Items.graphite, 40, Items.silicon, 35, VeItems.quartz, 55));
             tier = 4;
             drillTime = 108f;
-            drillMultipliers.put(Items.sporePod, 0f);// -
+            liquidBoostIntensity = 1.8f;
+            warmupSpeed = 0.01f;
+            drillMultipliers.put(Items.sporePod, 0f); // -
             rotateSpeed = 7f;
             updateEffect = new ParticleEffect() {{
-
+                colorFrom = Color.valueOf("ffffff");
+                colorTo = Color.valueOf("ffdaa9");
+                particles = 4;
+                length = 20f; // -
+                baseLength = 0f; // -
+                line = true;
+                strokeFrom = 3f;
+                strokeTo = 0f; // -
+                lenFrom = 10f;
+                lenTo = 0f;
+                lifetime = 10f;
             }};
             drawRim = true;
             heatColor = Color.valueOf("ffdaa9");
@@ -1835,41 +1853,6 @@ public class VeBlocks {
             ambientSoundVolume = 0.02f;
             researchCostMultiplier = 0.01f;
         }};
-        */
-        beamDrill = new Drill("beam-drill") {{
-            requirements(Category.production, ItemStack.with(Items.lead, 60, Items.graphite, 40, Items.silicon, 35, VeItems.quartz, 55));
-            tier = 4;
-            warmupSpeed = 0.01f;
-            drillTime = 108f;
-            itemCapacity = 30;
-            liquidBoostIntensity = 1.8f;
-            rotateSpeed = 7f;
-            conductivePower = true;
-            size = 3;
-            researchCostMultiplier = 0.01f;
-            consumeLiquid(Liquids.hydrogen, 3f / 60f).boost();
-            consumePower(72f / 60f);
-            hasPower = true;
-            ambientSound = Sounds.loopMineBeam;
-            ambientSoundVolume = 0.2f;
-            updateEffect = new ParticleEffect() {{
-                particles = 4;
-                line = true;
-                strokeFrom = 3f;
-                strokeTo = 0f;
-                lenFrom = 10f;
-                lenTo = 0f;
-                length = 20f;
-                baseLength = 0f;
-                lifetime = 10f;
-                colorFrom = Color.valueOf("ffffff");
-                colorTo = Color.valueOf("ffdaa9");
-            }};
-            drillMultipliers.put(Items.sporePod, 0);
-            drawRim = true;
-            heatColor = Color.valueOf("ffdaa9");
-        }};
-
 
         silicideDrill = new Drill("silicide-drill") {{
             requirements(Category.production, ItemStack.with(Items.lead, 100, Items.graphite, 60, VeItems.aluminium, 80, VeItems.silicide, 50));
@@ -1958,7 +1941,17 @@ public class VeBlocks {
             baseArrowColor = Color.valueOf("2d2f39");
             glowColor = Color.valueOf("ff6b41"); // -
             drillEffect = new MultiEffect(
-
+                    Fx.breakProp, Fx.breakProp, Fx.breakProp, Fx.breakProp,
+                    Fx.massiveExplosion,
+                    Fx.drillSteam,
+                    new SoundEffect() {{
+                        sound = new RandomSound(VeSounds.lbp3PlungerSwitch1, VeSounds.lbp3PlungerSwitch2, VeSounds.lbp3PlungerSwitch3);
+                        minPitch = 1f;
+                        maxPitch = 1f;
+                        minVolume = 0.06f;
+                        maxVolume = 0.06f;
+                        effect = Fx.none;
+                    }}
             );
             tier = 7;
             drillTime = 240f;
@@ -2354,6 +2347,46 @@ public class VeBlocks {
             researchCostMultiplier = 0.01f;
         }};
 
+        reflectorCultivator = new GenericCrafter("reflector-cultivator") {{
+            requirements(Category.production, ItemStack.with(Items.lead, 30, Items.silicon, 40, VeItems.aluminium, 50, VeItems.ferrum, 20, VeItems.reflectorMatter, 10));
+            outputItem = new ItemStack(VeItems.reflectorMatter, 5);
+            consumeItem(VeItems.redSoil, 2);
+            consumeLiquid(Liquids.water, 2f / 60f);
+            consumePower(42f / 60f);
+            craftEffect = Fx.none;
+            hasItems = hasLiquids = hasPower = true;
+            // attribute = Attribute.plant;
+            liquidCapacity = 10f;
+            itemCapacity = 15;
+            craftTime = 480f;
+            size = 2;
+            armor = 4f;
+            legacyReadWarmup = true;
+            // maxBoost = 0.75f;
+            drawer = new DrawMulti(
+                    new DrawRegion("-bottom"),
+                    new DrawLiquidTile(Liquids.water),
+                    new DrawCultivator() {{
+                        plantColorLight = plantColor = bottomColor = Color.valueOf("a58570");
+                    }},
+                    new DrawRegion(""),
+                    new DrawFlame() {{
+                        flameColor = Color.valueOf("ffffff00");
+                        flameRadius = 0f;
+                        flameRadiusIn = 0f;
+                        lightRadius = 24f;
+                        // lightColor = Color.valueOf("3300ff");
+                        lightAlpha = 0.8f;
+                    }},
+                    new DrawGlowRegion("-glow") {{
+                        alpha = 0.5f;
+                        color = Color.valueOf("ffa665");
+                        glowScale = 10f;
+                        glowIntensity = 0.1f;
+                    }}
+            );
+        }};
+
 
         collector = new Drill("collector") {{
             requirements(Category.production, ItemStack.with(VeItems.ferrum, 20));
@@ -2459,45 +2492,718 @@ public class VeBlocks {
             researchCostMultiplier = 0.5f;
         }};
 
-        reflectorCultivator = new GenericCrafter("reflector-cultivator") {{
-            requirements(Category.production, ItemStack.with(Items.lead, 30, Items.silicon, 40, VeItems.aluminium, 50, VeItems.ferrum, 20, VeItems.reflectorMatter, 10));
-            outputItem = new ItemStack(VeItems.reflectorMatter, 5);
-            consumeItem(VeItems.redSoil, 2);
-            consumeLiquid(Liquids.water, 2f / 60f);
-            consumePower(42f / 60f);
-            craftEffect = Fx.none;
-            hasItems = hasLiquids = hasPower = true;
-            // attribute = Attribute.plant;
-            liquidCapacity = 10f;
-            itemCapacity = 15;
-            craftTime = 480f;
-            size = 2;
-            armor = 4f;
-            legacyReadWarmup = true;
-            // maxBoost = 0.75f;
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawLiquidTile(Liquids.water),
-                    new DrawCultivator() {{
-                        plantColorLight = plantColor = bottomColor = Color.valueOf("a58570");
-                    }},
-                    new DrawRegion(""),
-                    new DrawFlame() {{
-                        flameColor = Color.valueOf("ffffff00");
-                        flameRadius = 0f;
-                        flameRadiusIn = 0f;
-                        lightRadius = 24f;
-                        // lightColor = Color.valueOf("3300ff");
-                        lightAlpha = 0.8f;
-                    }},
-                    new DrawGlowRegion("-glow") {{
-                        alpha = 0.5f;
-                        color = Color.valueOf("ffa665");
-                        glowScale = 10f;
-                        glowIntensity = 0.1f;
-                    }}
-            );
+
+        armoredBridgeConveyor = new DuctBridge("armored-bridge-conveyor") {{
+            requirements(Category.distribution, ItemStack.with(Items.metaglass, 10, Items.thorium, 10, Items.plastanium, 10));
+            speed = 4f;
+            range = 6;
+            health = 220;
         }};
+
+        armoredRouter = new DuctRouter("armored-router") {{
+            requirements(Category.distribution, ItemStack.with(Items.metaglass, 4, Items.thorium, 4, Items.plastanium, 4));
+            speed = 4f;
+            solid = false; // -
+            health = 190;
+            regionRotated1 = 1;
+        }};
+
+        armoredOverflowGate = new OverflowDuct("armored-overflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 4, Items.thorium, 4, Items.plastanium, 4));
+            speed = 4f;
+            health = 190;
+            solid = false;
+        }};
+
+        armoredUnderflowGate = new OverflowDuct("armored-underflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 4, Items.thorium, 4, Items.plastanium, 4));
+            speed = 4f;
+            invert = true;
+            health = 190;
+            solid = false;
+        }};
+
+        armoredUnloader = new DirectionalUnloader("armored-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.thorium, 10, Items.silicon, 10, Items.plastanium, 10));
+            speed = 4f;
+            allowCoreUnload = true;
+            solid = false;
+            health = 190;
+            regionRotated1 = 1;
+        }};
+
+        silicideDuct = new Duct("silicide-duct") {{
+            requirements(Category.distribution, ItemStack.with(Items.titanium, 1, VeItems.silicide, 1));
+            speed = 4f;
+            health = 280;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+        }};
+
+        silicideArmoredDuct = new Duct("silicide-armored-duct") {{
+            requirements(Category.distribution, ItemStack.with(Items.metaglass, 1, Items.thorium, 1, VeItems.silicide, 1));
+            speed = 4f;
+            armored = true;
+            health = 460;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+        }};
+
+        silicideJunction = new Junction("silicide-junction") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 4, VeItems.silicide, 2));
+            speed = 6f;
+            capacity = 8;
+            displayedSpeed = 80f; // 60f / 6f * 8 = 80f
+            health = 280;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 6f;
+            ((Duct)silicideDuct).junctionReplacement = ((Duct)silicideArmoredDuct).junctionReplacement = this;
+        }};
+
+        silicideBridgeConveyor = new BufferedItemBridge("silicide-bridge-conveyor") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 6, VeItems.silicide, 6));
+            speed = 40f; // -
+            bufferCapacity = 30;
+            displayedSpeed = 15f;
+            range = 4;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 6f; // -
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 3f;
+            ((Duct)silicideDuct).bridgeReplacement = ((Duct)silicideArmoredDuct).bridgeReplacement = this;
+        }};
+
+        silicideSorter = new Sorter("silicide-sorter") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 2, VeItems.silicide, 3));
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 3f;
+        }};
+
+        silicideInvertedSorter = new Sorter("silicide-inverted-sorter") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 2, VeItems.silicide, 3));
+            invert = true;
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 3f;
+        }};
+
+        silicideRouter = new Router("silicide-router") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, VeItems.silicide, 3));
+            speed = 4f;
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 4f;
+        }};
+
+        silicideDistributor = new Router("silicide-distributor") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 5, Items.lead, 5, VeItems.silicide, 7));
+            speed = 4f;
+            health = 640;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            size = 2;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 4f;
+        }};
+
+        silicideOverflowGate = new OverflowGate("silicide-overflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 4, VeItems.silicide, 3));
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 3f;
+        }};
+
+        silicideUnderflowGate = new OverflowGate("silicide-underflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 4, VeItems.silicide, 3));
+            invert = true;
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            buildCostMultiplier = 3f;
+        }};
+
+        silicideUnloader = new Unloader("silicide-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.titanium, 25, Items.silicon, 15, VeItems.silicide, 5));
+            speed = 4f;
+            health = 370;
+            armor = 16f;
+            size = 1; // -
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            group = BlockGroup.transportation;
+            crushDamageMultiplier = 0.05f;
+        }};
+
+        ductJunction = new DuctJunction("duct-junction") {{
+            requirements(Category.distribution, ItemStack.with(Items.beryllium, 3));
+            speed = 4f;
+            health = 120;
+        }};
+
+        /*
+        block = new TreeBlock("") {{
+            // = new Block("") {{
+                // = new TreeBlock("") {{
+                shadowOffset = f; // -4f
+
+                solid = true; // 是否为实体
+                clipSize = 90; // -1f 方块的贴图裁剪范围大小
+                customShadow = true; // false 是否绘制自定义阴影(name-shadow)
+
+            // Block
+            requirements(Category.distribution, BuildVisibility.hidden, ItemStack.with(Items., ));
+
+            // 基础属性
+            insulated = ; // false 是否具有绝缘属性
+            absorbLasers = ; // false 能否吸收激光
+            scaledHealth = f; // -1f 每个格子所占的生命值基数, 结果为: health = size * size * scaledHealth并四舍五入至5的倍数
+            health = ; // -1 生命值, 跳过scaledHealth
+            armor = f; // 0f 护甲
+            baseExplosiveness = ; // 0f 基础爆炸性
+            explosivenessScale = ; // 1f 爆炸性系数
+            flammabilityScale = ; // 1f 易燃性系数
+            size = ; // 1 方块大小
+            placeOverlapRange = f; // 50f 启用placeRangeCheck规则时, 检测敌方方块的范围
+            attacks = ; // false 能否攻击
+            suppressable = ; // false 是否与修复有关
+            canOverdrive = ; // true 能否超速
+            researchCostMultiplier = f; // 1f 研究成本倍数
+            researchCostMultipliers.put(Items., f); // 每种物品的研究成本
+            researchCost = ItemStack.with(Items., ); // 覆盖研究成本
+            unitCapModifier = ; // 0 提供的单位容量, 仅当方块的标志包含unitModifier时生效
+            fogRadius = ; // -1 能揭示多大范围的战争迷雾
+            // 作为载荷
+            updateInUnits = ; // true 当方块作为单位搬运的载荷时，是否继续更新
+            alwaysUpdateInUnits = ; // false 作为载荷时, 是否无视实验性游戏规则，始终更新
+            canPickup = ; // true 能否被搬起
+            deconstructDropAllLiquid = ; // false 如果为false, 则在解构时仅输出可焚烧液体, 否则输出所有液体
+            // 索敌
+            flags = EnumSet.of(BlockFlag.); // 方块的标志集合，用于AI索引
+            priority = f; // TargetPriority.base 敌人瞄准优先级
+            targetable = ; // true 单位是否瞄准此方块
+            // 特殊属性
+            inEditor = ; // true 编辑器中是否可见
+            editorConfigurable = ; // 是否可在编辑器中配置
+            update = ; // 该方块是否具有持续更新的方块实体
+            solid = ; // 是否为实体
+            solidifes = ; // 是否为实心方块
+            teamPassable = ; // 如果为true, 则被视为同阵营的非实体方块
+            underBullets = ; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            saveData = ; // 是否保存数据到世界存档
+            timers = ; // 0 计时器的最大值
+            sync = ; // 是否需要周期性的在网络中同步
+            forceTeam = ; // 所有这个方块全部强制属于这个队伍
+
+            // 放置和拆除
+            breakable = ; // 是否可以用右键直接拆除这个方块
+            requiresWater = ; // false 是否只能放置在水上
+            placeableLiquid = ; // false 能否放置在任何液体上
+            placeablePlayer = ; // true 能否通过建筑菜单直接放置
+            placeableOn = ; // true 其他方块能否放置在这个方块上面
+            floating = ; // false 是否可以放置在液体边缘
+            alwaysReplace = ; // false 是否在所有情况下都可以被替换
+            replaceable = ; // true 能否被替换
+            group = BlockGroup.; // 属于哪个组, 同组方块可以相互替换
+            delayLandingConfig = ; // 如果为true, 则在着陆构建动画中, 该方块的配置操作会被延迟, 未来可能会被移除
+            conveyorPlacement = ; // 是否使用传送带式放置模式
+            allowDiagonal = ; // true 能否使用对角线放置模式(ctrl)
+            swapDiagonalPlacement = ; // 是否交换对角线放置模式
+            allowRectanglePlacement = ; // false 是否为矩形放置, 而非线性放置
+            schematicPriority = ; // 0 蓝图建造优先级
+            buildTime = f; // -1f 建造时间
+            buildCostMultiplier = f; // -1f 建造此方块的速度倍率
+            ignoreBuildDarkness = ; // false 能否在黑暗区域放置, 用于编辑静态墙
+            deconstructThreshold = f; // 0f 拆除完成的阈值
+            instantDeconstruct = ; // false 是否立即拆除, 不返还资源
+            // 旋转
+            rotate = ; // 是否可旋转
+            quickRotate = ; // true 放置后能否旋转
+            ignoreLineRotation = ; // false 如果为true, 该方块的朝向不会朝向拖动方向
+            invertFlip = ; // false 如果为true, 则放置或保存蓝图时不会旋转
+            rotateDraw = ; // true 当rotate为true且该项为false时, 该方块在渲染时不会旋转
+            rotateDrawEditor = ; // true 当rotate为true且该项为false时, 该方块在编辑器中渲染时不会旋转
+            lockRotation = ; // true 当rotate为false且该项为true时, 该方块放置时旋转将锁定到0(默认)
+            visualRotationOffset = f; // 0f 视觉旋转偏移
+            // 摧毁和重建
+            destructible = ; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
+            unitMoveBreakable = ; // 如果为true, 某些单位踩到或移动到该方块上时会破坏该方块
+            crushDamageMultiplier = f; // 1f 碾压伤害倍率
+            crushFragile = ; // false 如果为true, 当坦克的crushFragile同为true时, 会立刻破坏该方块
+            drawCracks = ; // true 损坏时是否产生裂纹
+            baseShake = ; // 3f 被摧毁时的屏幕震动
+            createRubble = ; // true 被摧毁时是否产生残骸
+            rebuildable = ; // true 是否可重建
+            allowDerelictRepair = ; // true 该方块的废墟能否通过点击修复
+            destroyBulletSameTeam = ; // false 被摧毁时产生子弹的阵营
+            destroyBullet = new () {{}}; // 被摧毁时产生的子弹
+            // 环境需求
+            envRequired = Env. | Env.; // 0 必要环境
+            envEnabled = Env. | Env.; // Env.terrestrial 可运行环境
+            envDisabled = Env. | Env.; // 0 无法运行的环境
+
+            // 配置
+            saveConfig = ; // false 是否保存上一次的配置并应用到新方块
+            copyConfig = ; // true 能否通过选取操作复制配置
+            clearOnDoubleTap = ; // true 能否通过双击清除配置
+            configurable = ; // 能否被点击并打开配置界面
+            allowConfigInventory = ; // true 物品库存是否与配置界面一起显示
+            selectionRows = ; // 5 选择菜单的行数
+            selectionColumns = ; // 4 选择菜单的列数
+            consumesTap = ; // 当方块被点击时，是否拦截touchDown事件
+            ignoreResizeConfig = ; // 如果为true, 在地图大小改变时, 不会有名为transform的点配置
+            commandable = ; // 在指挥模式下能否被选中
+            // 逻辑
+            privileged = ; // false 对于逻辑相关方块, 能否被普通逻辑处理器更改
+            autoResetEnabled = ; // true 当逻辑块长时间没有交互时，是否自动重置其启用状态
+            drawDisabled = ; // true 是否绘制禁用状态
+            noUpdateDisabled = ; // false 当方块被禁用时，是否停止更新
+            logicConfigurable = ; // false 能否被逻辑配置
+
+            // 生产
+            itemDrop = Items.; // 被钻头开采时, 能够开采出的物品
+            playerUnmineable = ; // false 如果为false, 该方块无法被玩家手动开采
+            attributes.set(Attribute., ); // 对某些事物的效率加成
+            // 物品
+            hasItems = ; // 是否拥有物品模块
+            depositCooldown = f; // -1f 玩家向该方块存入物品时的冷却时间
+            itemCapacity = ; // 10 物品容量
+            separateItemCapacity = ; // false 物品容量是否独立计算
+            unloadable = ; // true 装卸器能否作用于该方块
+            // 液体
+            hasLiquids = ; // 是否拥有液体模块
+            liquidCapacity = f; // -1f 液体容量
+            outputsLiquid = ; // false 是否输出液体
+            liquidPressure = f; // 1f 液体输出速率
+            displayFlow = ; // true 显示液体传输速率
+            // 电力
+            hasPower = ; // 是否拥有电力模块
+            consumesPower = ; // true 是否被视为耗电单元
+            outputsPower = ; // false 是否输出电力
+            connectedPower = ; // true 能否被节点连接
+            conductivePower = ; // false 能否通过接触传导电力
+            // 单位
+            outputsPayload = ; // false 能否输出载荷
+            acceptsUnitPayloads = ; // false 能否输入载荷
+            acceptsPayload = ; // false 载荷是否尝试进入该方块
+            // 输入输出
+            acceptsItems = ; // false 是否与附近的传送带连接
+            alwaysAllowDeposit = ; // false 是否忽略onlyDepositCore规则
+            outputFacing = ; // true 是否按方块朝向输出
+            noSideBlend = ; // false 是否接受来自侧面的输入
+            isDuct = ; // false 该方块是否为管道
+            allowResupply = ; // false 单位能否从该方块拿取物品
+            instantTransfer = ; // false 是否支持瞬时传输(光传)
+            dumpTime = ; // 5 尝试输出的时间间隔, 填5即每秒尝试输出12次
+            consumeLiquid(Liquids., f / 60f); // + .boost(); 消耗的液体 + 强化
+            consumeLiquids(LiquidStack.with(Liquids., f / 60f));
+            consumeCoolant(f); // + .boost(); 消耗任意冷却液 + 强化
+            consumePower(f / 60f); // 消耗的电力
+            consumeItem(Items., ); // 消耗的物品
+            consumeItems(ItemStack.with(Items., , Items., ));
+
+            // 渲染
+            variants = ; // 0 不同的变体贴图数量
+            drawArrow = ; // true 是否绘制旋转箭头
+            drawTeamOverlay = ; // true 是否绘制队伍标识
+            squareSprite = ; // true 贴图是否为完整方块
+            enableDrawStatus = ; // true 是否绘制状态
+            lightLiquid = Liquids.; // 用于光照效果的液体
+            offset = f; // 0f 方块在网格中的偏移量
+            clipSize = f; // -1f 方块的贴图裁剪范围大小
+            lightClipSize = f; // 仅用于光照的裁剪范围
+            cacheLayer = CacheLayer.; // 缓存渲染层类型
+            fillsTile = ; // true 如果为 false，即使被缓存，也会在方块下方绘制地板
+            forceDark = ; // false 是否强制让这个方块被黑暗/战争迷雾覆盖
+            drawLiquidLight = ; // true 是否绘制液体的发光效果
+            mapColor = ; // 小地图颜色
+            hasColor = ; //false 是否具有小地图颜色
+            outlineColor = Color.valueOf(""); // 404049 方块图标的轮廓颜色
+            outlineIcon = ; // false 是否有图标轮廓
+            outlineRadius = ; // 4 轮廓宽度
+            outlinedIcon = ; // -1 哪个图标区域会添加轮廓
+            hasShadow = ; // true 下方是否有阴影
+            customShadow = ; // false 是否绘制自定义阴影(name-shadow)
+            albedo = f; // 0f 反射率
+            lightColor = Color.valueOf(""); // 方块自身发出的环境光颜色
+            emitLight = ; // false 是否调用drawLight()
+            obstructsLight = ; // true 是否遮挡其他方块发出的光线
+            lightRadius = f; // 60f 光照半径
+            useColor = ; // true 是否在小地图中使用这个方块的颜色
+            // 音效
+            configureSound = Sounds.; // click 进行配置时产生的音效
+            placePitchChange = ; // true 建造时是否改变建造音效的音高
+            breakPitchChange = ; // true 拆除时是否改变拆除音效的音高
+            placeSound = Sounds.; // unset 建造音效
+            breakSound = Sounds.; // unset 拆除音效
+            destroySound = Sounds.; // unset 摧毁音效
+            destroySoundVolume = f; // 1f 摧毁音效音量
+            destroyPitchMin = f; // 1f 摧毁音效音调范围
+            destroyPitchMax = f; // 1f
+            ambientSound = Sounds.; // none 空闲时发出的声音
+            ambientSoundVolume = f; // 0.05f 空闲音效音量
+            // 粒子效果
+            placeEffect = Fx.; // placeBlock 放置效果
+            breakEffect = Fx.; // breakBlock 拆除效果
+            destroyEffect = Fx.; // dynamicExplosion 摧毁效果
+
+        }};
+        */
+
+        /*
+        distribution = new ("") {{
+            // = new Conveyor("") {{
+                // = new ArmoredConveyor("") {{
+                noSideBlend = true;
+
+            itemSpace = f; // 0.4f 物品之间的最小间隔
+            capacity = ; // 3 每节传送带最多容纳的物品数量
+            speed = f; // 0f 运输速率
+            displayedSpeed = f; // 0f 显示的速率
+            pushUnits = ; // true 是否推动站在上面的单位
+            junctionReplacement = Blocks.; // 交叉器
+            bridgeReplacement = Blocks.; // 桥
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            rotate = true; // 是否可旋转
+            noUpdateDisabled = false; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = capacity; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
+            ambientSoundVolume = 0.0022f; // 0.05f 空闲音效音量
+
+            // = new StackConveyor("") {{
+            glowAlpha = f; // 1f 发光透明度
+            glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
+            baseEfficiency = f; // 0f 基础运力倍率, 强化后倍率为 this +1
+            speed = f; // 0f 运输速率, 运力 = 单次装载数 * this * 60f
+            outputRouter = ; // true 是否输出到路由器
+            recharge = f; // 2f 填满一条线所需的最小装载点数量
+            loadEffect = Fx.; // conveyorPoof 装载时的粒子效果
+            unloadEffect = Fx.; // conveyorPoof 卸载时的粒子效果
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 10; // 10 物品容量
+            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
+            ambientSoundVolume = 0.004f; // 0.05f 空闲音效音量
+
+            // = new Junction("") {{
+            speed = f; // 26 物品经过需要的时间
+            capacity = ; // 6 物品容量
+            displayedSpeed = f; // 13f 显示的速率
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new ItemBridge("") {{
+                // = new BufferedItemBridge("") {{
+                speed = f; // 40f 物品经过需要的时间
+                bufferCapacity = ; // 50 缓冲区容量
+                displayedSpeed = f; // 11f 显示给玩家的速度
+                // Block
+                canOverdrive = true; // true 能否超速
+                hasItems = true; // 是否拥有物品模块
+                hasPower = false; // 是否拥有电力模块
+
+            range = ; // 最大连接距离
+            transportTime = f; // 物品从一端传输到另一端所需的时间
+            fadeIn = ; // true 是否渐显
+            moveArrows = ; // true 是否显示移动的箭头
+            pulse = ; // false 是否启用脉冲效果
+            arrowSpacing = f; // 4f 箭头之间的间隔距离
+            arrowOffset = f; // 2f 箭头位置的偏移量
+            arrowPeriod = f; // 0.4f 箭头动画周期
+            arrowTimeScl = f; // 6.2f 箭头动画时间缩放
+            bridgeWidth = f; // 6.5f 桥身绘制的宽度
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            delayLandingConfig = true; // 如果为true, 则在着陆构建动画中, 该方块的配置操作会被延迟, 未来可能会被移除
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            copyConfig = false; // true 能否通过选取操作复制配置
+            allowConfigInventory = false; // true 物品库存是否与配置界面一起显示
+            ignoreResizeConfig = true; // 如果为true, 在地图大小改变时, 不会有名为transform的点配置
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            configurable = true; // false 能否被逻辑配置
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 10; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            hasPower = true; // 是否拥有电力模块
+
+            // = new Sorter("") {{
+            invert = ; // 效果反向
+            // Block
+            update = false; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true;  // 能否被点击并打开配置界面
+            unloadable = false; // true 装卸器能否作用于该方块
+            instantTransfer = true; // false 是否支持瞬时传输(光传)
+
+            // = new Router("") {{
+            speed = f; // 8f
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new OverflowGate("") {{
+            speed = f; // 1f
+            invert = ; // false 效果反向
+            // Block
+            canOverdrive = false; // true 能否超速
+            update = false; // 该方块是否具有持续更新的方块实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            instantTransfer = true; // false 是否支持瞬时传输(光传)
+
+            // = new Unloader("") {{
+            speed = f; // 1f 每次装卸的时间间隔
+            allowCoreUnload = ; // true 能否从核心卸载
+            // Block
+            health = 70; // -1 生命值, 跳过scaledHealth
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new Duct("") {{
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            armored = ; // false 是否具有装甲
+            transparentColor = Color.valueOf(""); // 管道颜色
+            bridgeReplacement = Blocks.; // 交叉器
+            junctionReplacement = Blocks.; // 桥
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            noSideBlend = true; // false 是否接受来自侧面的输入
+            isDuct = true; // false 该方块是否为管道
+
+            // = new DuctJunction("") {{
+            transparentColor = Color.valueOf(""); // 管道颜色
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            floating = true; // false 是否可以放置在液体边缘
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new DuctBridge("") {{
+            speed = 5f; // 物品运输的时间间隔
+            // Block-1
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 4; // 10 物品容量
+            isDuct = true; // false 该方块是否为管道
+            // DirectionBridge
+            range = ; // 4 最大连接距离
+            // Block-2
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            drawArrow = false; // true 是否绘制旋转箭头
+
+            // = new DuctRouter("") {{
+                // = new StackRouter("") {{
+                baseEfficiency = f; // 0f 基础效率
+                glowAlpha = f; // 1f 发光透明度
+                glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
+                // Block
+                itemCapacity = 10; // 10 物品容量
+
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new OverflowDuct("") {{
+            speed = f; // 5f 两次物品运输之间的时间间隔
+            invert = ; // false 效果反向
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = false; // 是否为实体
+            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            conveyorPlacement = true; // 是否使用传送带式放置模式
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 1; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+
+            // = new DirectionalUnloader("") {{
+            speed = f; // 1f 两次物品运输之间的时间间隔
+            allowCoreUnload = ; // false 能否从核心卸载
+            // Block
+            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            rotate = true; // 是否可旋转
+            envDisabled = Env.none; // 0 无法运行的环境
+            clearOnDoubleTap = true; // true 能否通过双击清除配置
+            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
+            configurable = true; // 能否被点击并打开配置界面
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            hasItems = true; // 是否拥有物品模块
+            itemCapacity = 0; // 10 物品容量
+            unloadable = false; // true 装卸器能否作用于该方块
+            isDuct = true; // false 该方块是否为管道
+
+            // = new MassDriver("") {{
+            range = f; // 最大传输距离
+            rotateSpeed = f; // 5f 旋转速度
+            translation = f; // 7f 后坐力位移
+            minDistribute = ; // 10 最小发送数量
+            knockback = f; // 4f 后坐力强度
+            reload = f; // 100f 装填时间
+            bullet = new MassDriverBolt(); // 发射的子弹类型
+            bulletSpeed = f; // 5.5f 子弹飞行速度
+            bulletLifetime = f; // 200f 子弹最长存在时间
+            shootEffect = Fx.; // shootBig2 发射特效
+            smokeEffect = Fx.; // shootBigSmoke2 烟雾特效
+            receiveEffect = Fx.; // mineBig 接收特效
+            shootSound = Sounds.; // massdriver 发射音效
+            receiveSound = Sounds.; // massdriverReceive 接收音效
+            shootSoundVolume = f; // 0.5f 发射音量
+            shake = f; // 3f 屏幕震动强度
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            sync = true; // 是否需要周期性的在网络中同步
+            envEnabled |= Env.space; // Env.terrestrial 可运行环境
+            configurable = true; // 能否被点击并打开配置界面
+            hasItems = true; // 是否拥有物品模块
+            hasPower = true; // 是否拥有电力模块
+            outlineIcon = true; // false 是否有图标轮廓
+        }};
+        */
+
+        /*
+        liquid = new () {{
+
+            // = new DirectionLiquidBridge("") {{
+            speed = f; // 5f 液体传输速度
+            liquidPadding = f; // 1f 液体缓冲量
+            // Block-1
+            canOverdrive = false; // true 能否超速
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            hasLiquids = true; // 是否拥有液体模块
+            liquidCapacity = 20f; // -1f 液体容量
+            outputsLiquid = true; // false 是否输出液体
+            // DirectionBridge
+            range = ; // 4 最大连接距离
+            // Block-2
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // 0 蓝图建造优先级
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            update = true; // 该方块是否具有持续更新的方块实体
+            drawArrow = false; // true 是否绘制旋转箭头
+
+
+        }};
+        */
 
         rail = new Conveyor("rail") {{
             requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 1));
@@ -3137,6 +3843,7 @@ public class VeBlocks {
             destroySoundVolume = 3f;
         }};
 
+
         bush = new Prop("bush") {{
             requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.with(VeItems.plantMatter, 8));
             buildCostMultiplier = 6f;
@@ -3156,6 +3863,7 @@ public class VeBlocks {
             breakSound = Sounds.plantBreak;
             alwaysUnlocked = true;
         }};
+
 
         quartzExtractor = new GenericCrafter("quartz-extractor") {{
             requirements(Category.crafting, ItemStack.with(Items.copper, 16, Items.graphite, 12));
@@ -3396,7 +4104,7 @@ public class VeBlocks {
             canOverdrive = ; // true 能否超速
             researchCostMultiplier = f; // 1f 研究成本倍数
             researchCostMultipliers.put(Items., f); // 每种物品的研究成本
-            researchCost = with(Items., ); // 覆盖研究成本
+            researchCost = ItemStack.with(Items., ); // 覆盖研究成本
             unitCapModifier = ; // 0 提供的单位容量, 仅当方块的标志包含unitModifier时生效
             fogRadius = ; // -1 能揭示多大范围的战争迷雾
             // 作为载荷
@@ -3411,6 +4119,7 @@ public class VeBlocks {
             // 特殊属性
             inEditor = ; // true 编辑器中是否可见
             editorConfigurable = ; // 是否可在编辑器中配置
+            update = ; // 该方块是否具有持续更新的方块实体
             solid = ; // 是否为实体
             solidifes = ; // 是否为实心方块
             teamPassable = ; // 如果为true, 则被视为同阵营的非实体方块
@@ -3501,7 +4210,6 @@ public class VeBlocks {
             outputsLiquid = ; // false 是否输出液体
             liquidPressure = f; // 1f 液体输出速率
             displayFlow = ; // true 显示液体传输速率
-            isDuct = ; // false 该方块是否为液体管道
             // 电力
             hasPower = ; // 是否拥有电力模块
             consumesPower = ; // true 是否被视为耗电单元
@@ -3513,12 +4221,20 @@ public class VeBlocks {
             acceptsUnitPayloads = ; // false 能否输入载荷
             acceptsPayload = ; // false 载荷是否尝试进入该方块
             // 输入输出
+            acceptsItems = ; // false 是否与附近的传送带连接
             alwaysAllowDeposit = ; // false 是否忽略onlyDepositCore规则
             outputFacing = ; // true 是否按方块朝向输出
             noSideBlend = ; // false 是否接受来自侧面的输入
+            isDuct = ; // false 该方块是否为管道
             allowResupply = ; // false 单位能否从该方块拿取物品
-            acceptsItems = ; // false 是否与附近的传送带连接
             instantTransfer = ; // false 是否支持瞬时传输(光传)
+            dumpTime = ; // 5 尝试输出的时间间隔, 填5即每秒尝试输出12次
+            consumeLiquid(Liquids., f / 60f); // + .boost(); 消耗的液体 + 强化
+            consumeLiquids(LiquidStack.with(Liquids., f / 60f));
+            consumeCoolant(f); // + .boost(); 消耗任意冷却液 + 强化
+            consumePower(f / 60f); // 消耗的电力
+            consumeItem(Items., ); // 消耗的物品
+            consumeItems(ItemStack.with(Items., , Items., ));
 
             // 渲染
             variants = ; // 0 不同的变体贴图数量
@@ -3534,6 +4250,7 @@ public class VeBlocks {
             fillsTile = ; // true 如果为 false，即使被缓存，也会在方块下方绘制地板
             forceDark = ; // false 是否强制让这个方块被黑暗/战争迷雾覆盖
             drawLiquidLight = ; // true 是否绘制液体的发光效果
+            mapColor = ; // 小地图颜色
             hasColor = ; //false 是否具有小地图颜色
             outlineColor = Color.valueOf(""); // 404049 方块图标的轮廓颜色
             outlineIcon = ; // false 是否有图标轮廓
@@ -3567,5 +4284,123 @@ public class VeBlocks {
         }};
         */
 
+        /*
+        effect = new ParticleEffect() {{
+            // = new ParticleEffect() {{
+            colorFrom = Color.valueOf(""); // Color.white.cpy() 粒子起始颜色
+            colorTo = Color.valueOf(""); // Color.white.cpy() 粒子结束颜色
+            particles = ; // 6 粒子数量
+            randLength = ; // true 是否随机粒子长度
+            casingFlip = ; // 是否支持弹壳翻转效果
+            cone = f; // 180f 粒子发射锥形角度
+            length = f; // 20f 粒子最大长度/距离
+            baseLength = f; // 0f 粒子基础长度
+            interp = Interp.; // linear 粒子大小/长度变化的插值方式
+            sizeInterp = ; // null 粒子大小的专用插值
+            offsetX = f; // 粒子位置偏移
+            offsetY = f;
+            lightScl = f; // 2f 光照大小缩放
+            lightOpacity = f; // 0.6f 光照透明度
+            lightColor = Color.valueOf(""); // 光照颜色
+            //region only
+            spin = f; // 每帧旋转角度
+            sizeFrom = f; // 2f 贴图起始大小
+            sizeTo = f; // 0f 贴图结束大小
+            sizeChangeStart = f; // 0f 贴图开始改变大小的延迟时间
+            useRotation = ; // true 是否继承父级旋转
+            offset = f; // 0 旋转角度偏移
+            region = ; // "circle" 使用的纹理名称
+            // line only
+            line = ; // 是否使用线条模式
+            strokeFrom = f; // 2f 线条起始粗细
+            strokeTo = f; // 0f 线条结束粗细
+            lenFrom = f; // 4f 线条起始长度
+            lenTo = f; // 2f 线条结束长度
+            cap = ; // true 是否绘制端点
+
+            // = new ExplosionEffect() {{
+            // 冲击波
+            waveColor = Color.valueOf(""); // ffd2ae 冲击波颜色
+            waveLife = f; // 6f 冲击波存在时间
+            waveStroke = f; // 3f 冲击波线条粗细
+            waveRad = f; // 15f 冲击波最大半径
+            waveRadBase = f; // 2f 冲击波基础半径
+            // 烟雾
+            smokeColor = Color.valueOf(""); // Color.gray 烟雾颜色
+            smokeSize = f; // 4f 烟雾最终大小
+            smokeSizeBase = f; // 0.5f 烟雾基础大小
+            smokeRad = f; // 23f 烟雾扩散半径
+            smokes = ; // 5 烟雾数量
+            // 火花
+            sparkColor = Color.valueOf(""); // e58956 火花颜色
+            sparkStroke = f; // 1f 火花线条粗细
+            sparkRad = f; // 23f 火花扩散半径
+            sparkLen = f; // 3f 火花长度
+            sparks = ; // 4 火花数量
+            // Effect
+            clip = 100f; // 特效的裁剪范围
+            lifetime = 22f; // 50f 特效存在时间
+
+            // = new MultiEffect(各个粒子效果);
+
+            // = new RadialEffect(effect, amount, spacing, lengthOffset, effectRotationOffset) {{
+            effect = Fx.; // Fx.none
+            rotationSpacing = f; // 90f 特效之间的旋转间隔角度
+            rotationOffset = f; // 0f 整体旋转偏移角度
+            effectRotationOffset = f; // 0f 特效自身的旋转偏移
+            lengthOffset = f; // 0f 特效离中心的距离偏移
+            amount = ; // 4 特效数量
+            // Effect
+            clip = 100f; // 特效的裁剪范围
+
+            // = new SeqEffect(按顺序的各个粒子效果);
+
+            // = new SoundEffect(sound, effect) {{
+            sound = Sounds.; // none 播放的音效
+            minPitch = f; // 0.8f 最小音调
+            maxPitch = f; // 1.2f 最大音调
+            minVolume = f; // 1f 最小音量
+            maxVolume = f; // 1f 最大音量
+            effect = Fx.; // 粒子效果
+            // Effect
+            startDelay = -1f; // 特效开始前的延迟时间
+
+            // = new WaveEffect() {{
+            colorFrom = Color.valueOf(""); // Color.white.cpy() 光环起始颜色
+            colorTo = Color.valueOf(""); // Color.white.cpy() 光环结束颜色
+            lightColor = Color.valueOf(""); // 光照颜色
+            sizeFrom = f; // 0f 光环起始大小
+            sizeTo = f; // 100f 光环结束大小
+            lightScl = f; // 3f 光照大小缩放
+            lightOpacity = f; // 0.8f 光照透明度
+            sides = f; // -1 多边形边数
+            rotation = f; // 0f 整体旋转角度
+            strokeFrom = f; // 2f 起始线条粗细
+            strokeTo = f; // 0f 结束线条粗细
+            interp = Interp.; // linear 大小/颜色变化的插值方式
+            lightInterp = Interp.; // reverse 光照的专用插值
+            offsetX = f; // 光环中心偏移量
+            offsetY = f;
+            // Effect
+            clip = Math.max(clip, Math.max(sizeFrom, sizeTo) + Math.max(strokeFrom, strokeTo)); // 特效的裁剪范围
+
+            // = new WrapEffect(effect, color, rotation) {{
+            effect = Fx.; // none
+            color = ; Color.valueOf("")// Color.white.cpy()
+            rotation = f; // 0f 整体旋转角度
+
+            // = new Effect(life, clipsize, renderer) {{
+            shakeFalloff = f; // 10000f 屏幕震动衰减系数
+            renderer = ; // 特效的渲染逻辑
+            lifetime = f; // 50f 特效存在时间
+            clip = f; // 特效的裁剪范围
+            startDelay = f; // 特效开始前的延迟时间
+            baseRotation = f; // 基础旋转角度
+            followParent = ; // true 是否跟随父级单位移动
+            rotWithParent = ; // 是否跟随父级单位旋转
+            layer = f; // Layer.effect 特效的渲染层
+            layerDuration = f; // 特定层的持续时间
+        }};
+        */
     }
 }
