@@ -2125,20 +2125,6 @@
         */
 
 
-// UnlockableContent
-            /*
-            alwaysUnlocked = ; // false 是否在科技树中始终解锁
-            inlineDescription = ; // true 是否在研究界面显示描述
-            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
-            hideDatabase = ; // false 是否在核心数据库中隐藏
-            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
-            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
-            databaseTabs.add(Planets.);
-            databaseCategory = ""; // default 数据库类别
-            databaseTag = ""; // default 数据库标签
-            */
-
-
 // Effect
         /*
         effect = new ParticleEffect() {{
@@ -2229,7 +2215,7 @@
             sizeTo = f; // 100f 光环结束大小
             lightScl = f; // 3f 光照大小缩放
             lightOpacity = f; // 0.8f 光照透明度
-            sides = f; // -1 多边形边数
+            sides = ; // -1 多边形边数
             rotation = f; // 0f 整体旋转角度
             strokeFrom = f; // 2f 起始线条粗细
             strokeTo = f; // 0f 结束线条粗细
@@ -2262,214 +2248,677 @@
 
 // Bullet
         /*
-        bullet = new () {{
-            // new BasicBulletType(f, f) {{
-            width = f; // 5f
-            height = f; // 7f
-            shrinkX = f; // 0f
-            shrinkY = f; // 0.5f
-            shrinkInterp = Interp.; // linear
-            spin = f; // 0f
-            rotationOffset = f; // 0f
-            sprite = "";
+        basicBullet = new BulletType() {{
+            // = new BasicBulletType(speed, damage, bulletSprite) {{
+                // = new ArtilleryBulletType(speed, damage) {{ // 火炮类型(冰雹类型)
+                trailMult = f; // 1f 拖尾效果的强度
+                trailSize = f; // 4f 拖尾的大小
+                // ContinuousBulletType
+                shrinkX = 0.15f; // 0f X轴缩放收缩量
+                shrinkY = 0.5f; // 0.5f Y轴缩放收缩量
+                shrinkInterp = Interp.slope; // linear 收缩效果的插值方式
+                // Bullet
+                scaleLife = true; // 是否根据距离缩放存在时间
+                speed = 1f; // 1f 子弹速度
+                damage = 1f; // 1f 直接命中伤害
+                collidesTiles = false; // true 是否与地形碰撞
+                collidesAir = false; // true 是否与空中单位碰撞
+                collides = false; // true 是否与任何东西碰撞
+                hitEffect = Fx.flakExplosion; // hitBulletSmall 命中效果
+                shootEffect = Fx.shootBig; // shootSmall 发射效果
+                hitShake = 1f; // 0f 命中时的屏幕震动
+                trailEffect = Fx.artilleryTrail; // missileTrail 尾迹特效
+                hitSound = Sounds.explosionArtillery; // none 命中音效
 
-            // new LightningBulletType() {{
+                // = new BombBulletType(damage, radius, "sprite") {{ // 炸弹类型(天垠类型)
+                // ContinuousBulletType
+                shrinkY = 0.7f; // 0.5f Y轴缩放收缩量
+                // Bullet
+                lifetime = 30f; // 40f 子弹存在时间
+                speed = 0.7f; // 1f 子弹速度
+                drag = 0.05f; // 0f 阻力大小
+                keepVelocity = false; // true 是否继承射手速度
+                damage = 0f; // 1f 直接命中伤害
+                collidesTiles = false; // true 是否与地形碰撞
+                collidesAir = false; // true 是否与空中单位碰撞
+                collides = false;  // true 是否与任何东西碰撞
+                splashDamage = damage; // 0f 溅射伤害
+                splashDamageRadius = radius; // -1f 溅射伤害半径
+                hitSound = Sounds.explosion; // none 命中音效
 
-            // 仅炮塔
-            shootPattern = null;
-            shootSound = Sounds.; // none
-            ammoMultiplier = f; // 2f
-            reloadMultiplier = f; // 1f
-            targetBlocks = ; // true
-            targetMissiles = ; // true
-            rangeChange = f; // 0f
-            // 液体子弹
-            puddles = ;
-            puddleRange = f;
-            puddleAmount = f; // 5f
-            puddleLiquid = Liquids.; // water
-            // 弹药消耗量显示
-            displayAmmoMultiplier = ; // true
-            statLiquidConsumed = f;
+                // = new EmpBulletType() {{ // EMP类型(龙王类型)
+                radius = f; // 100f EMP效果半径
+                timeIncrease = f; // 2.5f 效果时间增加量
+                timeDuration = f; // 60f * 10f 效果总持续时间
+                powerDamageScl = f; // 2f 对电力建筑的伤害倍率
+                powerSclDecrease = f; // 0.2f 连锁伤害衰减
+                hitPowerEffect = Fx.; // hitEmpSpark 命中电力建筑时的特效
+                chainEffect = Fx.; // chainEmp 连锁跳转特效
+                applyEffect = Fx.; // heal 施加状态时的特效
+                hitUnits = ; // true 是否影响单位
+                unitDamageScl = f; // 0.7f 对单位伤害倍率
 
-            // 仅单位
-            recoil = f;
+                // = new FlakBulletType(speed, damage) {{ // 防空炮类型(分裂类型)
+                explodeRange = f; // 30f 触发爆炸的目标距离范围
+                explodeDelay = f; // 5f 命中后的爆炸延迟
+                flakDelay = f; // 0f 首次引爆延迟
+                flakInterval = f; // 6f 后续引爆间隔
+                // ContinuousBulletType
+                width = 8f; // 5f 子弹宽度
+                height = 10f; // 7f 子弹高度
+                // Bullet
+                speed = 1f; // 1f 子弹速度
+                damage = 1f; // 1f 直接命中伤害
+                collidesGround = false; // true 是否与地面单位碰撞
+                splashDamageRadius = 34f; // -1f 溅射伤害半径
+                splashDamage = 15f;  // 0f 溅射伤害
+                hitEffect = Fx.flakExplosionBig; // hitBulletSmall 命中效果
 
-            // 通用
-            lifetime = f; // 40f
-            lifeScaleRandMin = f; // 1f
-            lifeScaleRandMax = f; // 1f
-            speed = f; // 1f
-            velocityScaleRandMin = f; // 1f
-            velocityScaleRandMax = f; // 1f
-            damage = f; // 1f
-            hitSize = f; // 4f
-            drawSize = f; // 40f
-            angleOffset = f; // 0f
-            randomAngleOffset = f; // 0f
-            drag = f; // 0f
-            accel = f; // 0f
+                // = new InterceptorBulletType(speed, damage, bulletSprite) {{ // 点防拦截类型
 
-            // 穿透
-            pierce = ;
-            pierceBuilding = ;
-            pierceCap = ; // -1
-            pierceDamageFactor = f; // 0f
-            maxDamageFraction = f; // -1f
+                // = new LaserBoltBulletType(speed, damage) {{ // 激光子弹类型(新星类型)
+                width = f; // 2f 激光束宽度
+                height = f; // 7f 激光束长度
+                // Bullet
+                speed = 1f; // 1f 子弹速度
+                damage = 1f; // 1f 直接命中伤害
+                hittable = false; // true 是否能被点防消除
+                reflectable = false; // true 是否可被反射
+                hitEffect = Fx.hitLaser; // hitBulletSmall 命中效果
+                despawnEffect = Fx.hitLaser; // hitBulletSmall 消失效果
+                smokeEffect = Fx.hitLaser; // shootSmallSmoke 烟雾效果
+                lightOpacity = 0.6f; // 0.3f 光照透明度
+                lightColor = Pal.heal; // Pal.powerLight 光照颜色
 
-            laserAbsorb = ; // true
-            optimalLifeFract = f; // 0f
-            layer = ; // Layer.bullet
-            hitEffect = new (); // Fx.hitBulletSmall
-            despawnEffect = new (); // Fx.hitBulletSmall
-            shootEffect = new (); // Fx.shootSmall
-            chargeEffect = new (); // Fx.none
-            smokeEffect = new (); // Fx.shootSmallSmoke
-            hitSound = Sounds.; // none
-            despawnSound = Sounds.; // none
-            inaccuracy = f; // 0f
-            buildingDamageMultiplier = f; // 1f
-            shieldDamageMultiplier = f; // 1f
-            killShooter = ;
-            instantDisappear = ;
-            knockback = f;
-            impact = ;
-            status = StatusEffects.; // none
-            statusDuration = f; // 60 * 8f
+                // = new MassDriverBolt() {{ // 质驱子弹类型
+                // BasicBulletType
+                width = 11f; // 5f 子弹宽度
+                height = 13f; // 7f 子弹高度
+                shrinkY = 0f; // 0.5f Y轴缩放收缩量
+                sprite = "shell"; // 主贴图
+                // Bullet
+                speed = 1f; // 1f 子弹速度
+                damage = 75f; // 1f 直接命中伤害
+                lifetime = 1f; // 40f 子弹存在时间
+                collidesTiles = false; // true 是否与地形碰撞
+                hitEffect = Fx.hitBulletBig; // hitBulletSmall 命中效果
+                despawnEffect = Fx.smeltsmoke; // hitBulletSmall 消失效果
 
-            // 碰撞
-            collidesTiles = ; // true
-            collidesTeam = ; // false
-            collidesAir = ; // true
-            collidesGround = ; // true
-            collides = ; // true
-            collideFloor = ; // false
-            collideTerrain = ; // false
+                // = new MissileBulletType(speed, damage, bulletSprite) {{ // 导弹类型(蜂群类型)
+                backColor = Pal.missileYellowBack; // Pal.bulletYellowBack 底部颜色
+                frontColor = Pal.missileYellow; // Pal.bulletYellow 顶部颜色
+                width = 8f; // 5f 子弹宽度
+                height = 8f; // 7f 子弹高度
+                shrinkY = 0f; // 0.5f Y轴缩放收缩量
+                // Bullet
+                lifetime = 52f; // 40f 子弹存在时间
+                speed = 1f; // 1f 子弹速度
+                damage = 1f; // 1f 直接命中伤害
+                homingPower = 0.08f; // 0f 制导力度
+                trailChance = 0.2f; // -0.0001f 每帧产生尾迹特效的概率
+                hitSound = Sounds.explosion; // none 命中音效
 
-            keepVelocity = ; // true
-            scaleLife = ;
-            hittable = ; // true
-            reflectable = ; // true
-            absorbable = ; // true
-            ignoreSpawnAngle = ; // false
-            createChance = f; // 1f
-            range = f; // 0f
-            healPercent = f; // 0f
-            healAmount = f; // 0f
-            lifesteal = f; // 0f
+            backColor = Color.valueOf(""); // Pal.bulletYellowBack 底部颜色
+            frontColor = Color.valueOf(""); // Pal.bulletYellow 顶部颜色
+            mixColorFrom = Color.valueOf(""); // 混合颜色的起始值
+            mixColorTo = Color.valueOf(""); // 混合颜色的终止值
+            width = f; // 5f 子弹宽度
+            height = f; // 7f 子弹高度
+            shrinkX = f; // 0f X轴缩放收缩量
+            shrinkY = f; // 0.5f Y轴缩放收缩量
+            shrinkInterp = Interp.; // linear 收缩效果的插值方式
+            spin = f; // 0 每帧旋转速度
+            rotationOffset = f; // 0f 旋转角度偏移量
+            sprite = ""; // 主贴图
+            backSprite = ""; // 底部贴图
 
-            // 引燃相关
-            makeFire = ; // false
-            incendAmount = ; // 0
-            incendSpread = f; // 8f
-            incendChance = f; // 1f
+            // = new ContinuousBulletType() {{ // 连续子弹类型(激光等)
+                // = new ContinuousFlameBulletType(damage) {{ // 连续火焰子弹类型(升华类型)
+                lightStroke = f; // 40f 光照线条粗细
+                width = f; // 3.7f 火焰宽度
+                oscScl = f; // 1.2f 火焰摆动频率
+                oscMag = f; // 0.02f 火焰摆动幅度
+                divisions = ; // 25 火焰分段数量
+                drawFlare = ; // true 是否绘制闪光
+                flareColor = Color.valueOf(""); // e189f5 闪光颜色
+                flareWidth = f; // 3f 闪光宽度
+                flareInnerScl = f; // 0.5f 内部闪光缩放
+                flareLength = f; // 40f 闪光长度
+                flareInnerLenScl = f; // 0.5f 内部闪光长度缩放
+                flareLayer = Layer.; // bullet - 0.0001f 闪光渲染层
+                flareRotSpeed = f; // 1.2f 闪光旋转速度
+                rotateFlare = ; // false 闪光是否旋转
+                lengthInterp = Interp.; // slope 长度插值方式
+                lengthWidthPans = ; // 火焰各段的[长度, 宽度, 偏移]数组
+                colors = ; // 火焰颜色数组(从根部到尖端渐变)
+                // ContinuousBulletType
+                length = 120f; // 220f 最大攻击距离
+                // Bullet
+                lifetime = 16f; // 40f 子弹存在时间
+                optimalLifeFract = 0.5f; // 0f 达到最佳效果需要的时间
+                pierceArmor = true; // false 是否无视护甲
+                laserAbsorb = false; // true 是否被塑钢墙吸收(用于激光)
+                hitSize = 4; // 4 碰撞箱大小
+                ammoMultiplier = 1f; // 2f 装填倍率
+                drawSize = 420f; // 40f 子弹的渲染裁剪大小
+                hitEffect = Fx.hitFlameBeam; // hitBulletSmall 命中效果
+                hitColor = colors[1].cpy().a(1f); // white 命中效果颜色
+                lightOpacity = 0.7f; // 0.3f 光照透明度
+                lightColor = hitColor; // Pal.powerLight 光照颜色
 
-            fragOnHit = ; // true
-            fragOnAbsorb = ; // true
-            pierceArmor = ; // false
-            sticky = ; // false
-            stickyExtraLifetime = f; // 0f
-            hitColor = Color.valueOf("");
+                // = new ContinuousLaserBulletType(damage) {{ // 连续激光类型(熔毁类型)
+                fadeTime = f; // 16f 激光淡入/淡出时间
+                lightStroke = f; // 40f 光照线条粗细
+                divisions = ; // 13 激光分段数量
+                strokeFrom = f; // 2f 线条粗细范围
+                strokeTo = f; // 0.5f
+                pointyScaling = f; // 0.75f 尖端缩放比例
+                backLength = f; // 7f 激光末端长度
+                frontLength = f; // 35f 激光前端长度
+                width = f; // 9f 激光基础宽度
+                oscScl = f; // 0.8f 宽度摆动频率
+                oscMag = f; // 1.5f 宽度摆动幅度
+                colors = new Color[] {
+                        Color.valueOf("ec745855"),
+                        Color.valueOf("ec7458aa"),
+                        Color.valueOf("ff9c5a"),
+                        Color.white
+                }; // 激光颜色渐变数组
+                // ContinuousBulletType
+                shake = 1f; // 0f 屏幕震动强度
+                largeHit = true; // false 是否使用大型命中效果
+                // Bullet
+                lifetime = 16f; // 40f 子弹存在时间
+                hitSize = 4; // 4 碰撞箱大小
+                incendAmount = 1; // 0 尝试生成的火焰数量
+                incendSpread = 5; // 8f 火焰的扩散程度
+                incendChance = 0.4f; // 1f 火焰生成概率
+                drawSize = 420f; // 40f 子弹的渲染裁剪大小
+                hitEffect = Fx.hitBeam; // hitBulletSmall 命中效果
+                hitColor = colors[2]; // white 命中效果颜色
+                lightOpacity = 0.7f; // 0.3f 光照透明度
+                lightColor = Color.orange; // Pal.powerLight 光照颜色
 
-            // 抖动效果
-            hitShake = f; // 0f
-            despawnShake = f; // 0f
+            length = f; // 220f 最大攻击距离
+            shake = f; // 0f 屏幕震动强度
+            damageInterval = f; // 5f 伤害间隔
+            largeHit = ; // false 是否使用大型命中效果
+            continuous = ; // true 是否持续攻击
+            timescaleDamage = ; // false 是否受超速影响
+            // Bullet
+            lifetime = 16f; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            pierce = true; // 是否穿透单位
+            pierceCap = -1; // -1f 最大穿透次数
+            removeAfterPierce = false; // true 穿透次数耗尽后是否移除子弹
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            absorbable = false; // true 是否可被护盾吸收
+            impact = true; // 击退是否沿子弹方向
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = Fx.none; // shootSmall 发射效果
 
-            // 轨迹
-            trailColor = Color.valueOf("");
-            trailChance = f; // -0.0001f
-            trailInterval = f; // 0f
-            trailMinVelocity = f; // 0f
-            trailEffect = Fx.; // missileTrail
-            trailSpread = f; // 0f
-            trailParam = f; // 2f
-            trailRotation = ; // false
-            trailInterp = Interp.; // one
-            trailLength = f; // -1f
-            trailWidth = f; // 2f
-            trailSinMag = f; // 0f
-            trailSinScl = f; // 3f
+            // = new EmptyBulletType() {{ // 空子弹类型
+            // Bullet
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            collidesTiles = collidesAir = collidesGround = hittable = false;
 
-            // 子弹环绕射击者
-            circleShooter = ; // false
-            circleShooterRadius = f; // 13f
-            circleShooterRadiusSmooth = f; // 10f
-            circleShooterRotateSpeed = f; // 0.3f
+            // = new ExplosionBulletType(splashDamage, splashDamageRadius) {{ // 爆炸类型
+            // Bullet
+            lifetime = 1f; // 40f 子弹存在时间
+            rangeOverride = Math.max(20f, splashDamageRadius * 2f / 3f); // -1f 强制射程
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            killShooter = true; // 是否杀死射击者
+            instantDisappear = true; // 是否立即消失
+            splashDamage = splashDamage; // 0f 溅射伤害
+            scaledSplashDamage = true; // false 是否根据单位体积缩放溅射伤害
+            splashDamageRadius = splashDamageRadius; // -1f 溅射伤害半径
+            shootEffect = Fx.massiveExplosion; // shootSmall 发射效果
 
-            // 跟踪效果
-            homingPower = f; // 0f
-            homingRange = f; // 50f
-            homingDelay = f; // -1f
-            followAimSpeed = f; // 0f
+            // = new FireBulletType(speed, damage) {{ // 火焰类型
+            colorFrom = Color.valueOf(""); // Pal.lightFlame 火焰起始颜色
+            colorMid = Color.valueOf(""); // Pal.darkFlame 火焰中间颜色
+            colorTo = Color.valueOf(""); // Color.gray 火焰结束颜色
+            radius = f; // 3f 火焰半径
+            velMin = f; // 0.6f 火焰粒子最小速度
+            velMax = f; // 2.6f 火焰粒子最大速度
+            fireTrailChance = f; // 0.04f 产生火焰拖尾的概率
+            trailEffect2 = Fx.; // ballfire 第二种拖尾特效
+            fireEffectChance = f; // 0.1f 火焰特效触发概率
+            fireEffectChance2 = f; // 0.1f 第二种火焰特效触发概率
+            // Bullet
+            drag = 0.03f; // 0f 阻力大小
+            pierce = true; // 是否穿透单位
+            collidesTiles = false; // true 是否与地形碰撞
+            collides = false; // true 是否与任何东西碰撞
+            hitEffect = Fx.none; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            trailEffect = Fx.fireballsmoke; // missileTrail 尾迹特效
 
-            // 修复压制
-            suppressionRange = f; // -1f
-            suppressionDuration = f; // 60 * 8f
-            suppressionEffectChance = f; // 50f
-            suppressColor = Color.valueOf("");
+            // = new LaserBulletType(damage) {{ // 激光束类型(蓝瑟类型)
+            laserEffect = Fx.; // lancerLaserShootSmoke 激光发射时的特效
+            length = f; // 160f 激光最大长度
+            width = f; // 15f 激光基础宽度
+            lengthFalloff = f; // 0.5f 长度衰减系数
+            sideLength = f; // 29f 侧面光翼的长度
+            sideWidth = f; // 0.7f 侧面光翼的宽度
+            sideAngle = f; // 90f 侧面光翼的角度偏移
+            lightningSpacing = f; // -1 闪电生成间隔
+            lightningDelay = f; // 0.1f 闪电生成延迟
+            lightningAngleRand = f; // 闪电角度随机范围
+            largeHit = ; // false 是否使用大型命中判定
+            colors = new Color[]{Pal.lancerLaser.cpy().mul(1f, 1f, 1f, 0.4f), Pal.lancerLaser, Color.white}; // 激光颜色渐变数组
+            // Bullet
+            lifetime = 16f; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            pierce = true; // 是否穿透单位
+            removeAfterPierce = false; // true 穿透次数耗尽后是否移除子弹
+            hitSize = 4; // 4 碰撞箱大小
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            absorbable = false; // true 是否可被护盾吸收
+            impact = true; // 击退是否沿子弹方向
+            delayFrags = true; // false 分裂子弹是否延迟生成
+            hitEffect = Fx.hitLaserBlast;  // hitBulletSmall 命中效果
+            hitColor = colors[2]; // white 命中效果颜色
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = Fx.hitLancer; // shootSmall 发射效果
+            smokeEffect = Fx.none; // shootSmallSmoke 烟雾效果
 
-            // 子弹曲线飞行
-            weaveScale = f; // 1f
-            weaveMag = f; // 0f
-            weaveRandom = ; // true;
-            rotateSpeed = f; // 0f
+            // = new LightningBulletType() {{ // 闪电子弹类型(电弧类型)
+            // Bullet
+            lifetime = 1; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            damage = 1f; // 1f 直接命中伤害
+            hittable = false; // true 是否能被点防消除
+            status = StatusEffects.shocked; // none 命中附加的状态效果
+            lightningColor = Pal.lancerLaser; // Pal.surge 闪电颜色
+            lightningLength = 25; // 5 闪电基础长度
+            lightningLengthRand = 0; // 0 闪电随机额外长度
+            hitEffect = Fx.hitLancer; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
 
-            // 子弹光效
-            lightRadius = f; // -1f
-            lightOpacity = f; // 0.3f
-            lightColor = Color.valueOf("");
+            // = new LiquidBulletType(Liquids.) {{ // 液体子弹类型(波浪类型)
+            liquid = liquid; // 子弹携带的液体类型
+            puddleSize = f; // 6f 命中后生成的水坑大小
+            orbSize = f; // 3f 子弹飞行时的液滴大小
+            boilTime = f; // 5f 水坑蒸发时间
+            // Bullet
+                // if(liquid != null){
+                liquid = liquid;
+                lifetime = 34f; // 40f 子弹存在时间
+                ammoMultiplier = 1f; // 2f 装填倍率
+                status = liquid.effect; // none 命中附加的状态效果
+                hitColor = liquid.color; // white 命中效果颜色
+                lightOpacity = liquid.lightColor.a; // 0.3f 光照透明度
+                lightColor = liquid.lightColor; // Pal.powerLight 光照颜色
+            speed = 3.5f; // 1f 子弹速度
+            damage = 0f; // 1f 直接命中伤害
+            drag = 0.001f; // 0f 阻力大小
+            knockback = 0.55f; // 击退力度
+            statusDuration = 60f * 2f; // 60 * 8f 状态效果持续时间
+            hitEffect = Fx.hitLiquid; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = Fx.none; // shootSmall 发射效果
+            smokeEffect = Fx.none; // shootSmallSmoke 烟雾效果
+            displayAmmoMultiplier = false; // true 是否显示弹药倍率
 
-            //  额外效果
-            despawnHit = ; // false
-            setDefaults = ; // true
+            // = new MultiBulletType(bullets1, bullets2) {{}}// 多子弹类型
 
-            // 分裂子弹
-            fragBullet = new (); // null
-            delayFrags = ; // false
-            fragRandomSpread = f; // 360f
-            fragSpread = f; // 0f
-            fragAngle = f; // 0f
-            fragBullets = ; // 9
-            fragVelocityMin = f; // 0.2f
-            fragVelocityMax = f; // 1f
-            fragLifeMin = f; // 1f
-            fragLifeMax = f; // 1f
-            fragOffsetMin = f; // 1f
-            fragOffsetMax = f; // 7f
-            pierceFragCap = ; // -1
+            // = new PointBulletType() {{ // 点制导子弹类型
+            trailSpacing = f; // 10f 拖尾特效的间隔距离
+            // Bullet
+            lifetime = 100f; // 40f 子弹存在时间
+            scaleLife = true; // 是否根据距离缩放存在时间
+            keepVelocity = false; // true 是否继承射手速度
+            collides = false; // true 是否与任何东西碰撞
+            reflectable = false; // true 是否可被反射
 
-            // 固定间隔生成子弹
-            intervalBullet = new ();
-            bulletInterval = f; // 20f
-            intervalBullets = ; // 1
-            intervalRandomSpread = f; // 360f
-            intervalSpread = f; // 0f
-            intervalAngle = f; // 0f
-            intervalDelay = f; // -1f
+            // = new PointLaserBulletType() {{ // 点激光类型(光辉类型)
+            sprite = ; // "point-laser" 激光纹理名称
+            color = Color.valueOf(""); // white 激光颜色
+            beamEffect = Fx.; // colorTrail 光束上的特效
+            beamEffectInterval = f; // 3f 特效生成间隔
+            beamEffectSize = f; // 3.5f 特效大小
+            oscScl = f; // 2f 宽度波动频率
+            oscMag = f; // 0.3f 宽度波动幅度
+            damageInterval = f; // 5f 伤害间隔
+            shake = f; // 0f 屏幕震动强度
+            // Bullet
+            lifetime = 20f; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            optimalLifeFract = 0.5f; // 0f 达到最佳效果需要的时间
+            pierce = true; // 是否穿透单位
+            removeAfterPierce = false; // true 穿透次数耗尽后是否移除子弹
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            absorbable = false; // true 是否可被护盾吸收
+            impact = true; // 击退是否沿子弹方向
+            drawSize = 1000f; // 40f 子弹的渲染裁剪大小
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = Fx.none; // shootSmall 发射效果
+            smokeEffect =Fx.none; // shootSmallSmoke 烟雾效果
 
-            // 导弹
-            spawnUnit = new MissileUnitType("");
-            despawnUnit = new MissileUnitType("");
-            despawnUnitChance = f; // 1f
-            despawnUnitCount = ; // 1
-            despawnUnitRadius = f; // 0.1f
-            faceOutwards = ; // false
+            // = new RailBulletType() {{ // 轨道炮类型(厄兆类型)
+            pierceEffect = Fx.; // hitBulletSmall 每次穿透物体时触发的特效
+            pointEffect = Fx.; // none 沿弹道每隔一定距离生成的点状特效
+            lineEffect = Fx.; // none 沿整条弹道生成的线状特效
+            endEffect = Fx.; // none 弹道末端无命中时的特效
+            length = f; // 100f 子弹最大射程
+            pointEffectSpace = f; // 20f 点特效之间的间隔距离
+            // Bullet
+            lifetime = 1f; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            pierce = true; // 是否穿透单位
+            pierceBuilding = true; // 是否穿透建筑
+            collides = false; // true 是否与任何东西碰撞
+            reflectable = false; // true 是否可被反射
+            delayFrags = true; // false 分裂子弹是否延迟生成
+            hitEffect = Fx.none; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
 
-            // 溅射伤害
-            splashDamage = f; // 0f
-            scaledSplashDamage = ; // false
-            splashDamageRadius = f; // -1f
-            splashDamagePierce = ; // false
+            // = new SapBulletType() {{ // 生命窃取类型(血蛭类型)
+            length = f; // 100f 最大攻击距离
+            lengthRand = f; // 0f 距离随机增量
+            sapStrength = f; // 0.5f 吸血比例
+            color = Color.valueOf(""); // Color.white.cpy(); 激光颜色
+            width = f; // 0.4f 激光宽度
+            sprite = ; // "laser" 激光纹理名称
+            laserRegion = ; // 激光主体纹理
+            laserEndRegion = ; // 激光末端纹理
+            // Bullet
+            speed = 0f; // 1f 子弹速度
+            pierce = true; // 是否穿透单位
+            hitSize = 0f; // 4 碰撞箱大小
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            impact = true; // 击退是否沿子弹方向
+            status = StatusEffects.sapped; // none 命中附加的状态效果
+            statusDuration = 60f * 3f; // 60 * 8f 状态效果持续时间
+            hitEffect = Fx.hitLiquid; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            lightOpacity = 0.6f; // 0.3f 光照透明度
+            lightColor = Pal.sap; // Pal.powerLight 光照颜色
 
-            // 子弹产生的闪电效果
-            lightningColor = Color.valueOf("");
-            lightning = ;
-            lightningLength = ; // 5
-            lightningLengthRand = ; // 0
-            lightningDamage = f; // -1f
-            lightningCone = f; // 360f
-            lightningAngle = f; // 0f
-            lightningType = new (); // null
+            // = new ShrapnelBulletType() {{ // 雷光子弹类型
+            length = f; // 100f 闪电的总长度
+            width = f; // 20f 主闪电的基础宽度
+            fromColor = Color.valueOf(""); // white 颜色渐变起始颜色
+            toColor = Color.valueOf(""); // Pal.lancerLaser 颜色渐变结束颜色
+            hitLarge = ; // false 是否使用大型命中判定
+            serrations = ; // 7 分支的数量
+            serrationLenScl = f; // 10f 分支长度的缩放系数
+            serrationWidth = f; // 4f 每个分支的宽度
+            serrationSpacing = f; // 8f 分支之间的间隔距离
+            serrationSpaceOffset = f; // 80f 分支空间偏移量
+            serrationFadeOffset = f; // 0.5f 分支淡出偏移量
+            // Bullet
+            lifetime = 10f; // 40f 子弹存在时间
+            speed = 0f; // 1f 子弹速度
+            keepVelocity = false; // true 是否继承射手速度
+            pierce = true; // 是否穿透单位
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            absorbable = false; // true 是否可被护盾吸收
+            hitEffect = Fx.hitLancer; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = ; //  // shootSmall 发射效果
+            smokeEffect = Fx.lightningShoot; // shootSmallSmoke 烟雾效果
+            lightOpacity = 0.6f; // 0.3f 光照透明度
 
+            // = new SpaceLiquidBulletType() {{ // 太空液体子弹类型
+            orbSize = f; // 5.5f 液滴大小
+            // Bullet
+            lifetime = 90f; // 40f 子弹存在时间
+            speed = 3.5f; // 1f 子弹速度
+            drag = 0.002f; // 0f 阻力大小
+            damage = 0f; // 1f 直接命中伤害
+            collides = false; // true 是否与任何东西碰撞
+            hittable = false; // true 是否能被点防消除
+            hitEffect = Fx.none; // hitBulletSmall 命中效果
+            despawnEffect = Fx.none; // hitBulletSmall 消失效果
+            shootEffect = Fx.none; // shootSmall 发射效果
+            smokeEffect = Fx.none; // shootSmallSmoke 烟雾效果
         }};
-         */
+        */
+
+        /*
+        bullet = new BulletType(speed, damage) {{
+            // 基础属性部分
+            // 射程
+            lifetime = f; // 40f 子弹存在时间
+            lifeScaleRandMin = f; // 1f 子弹生命时间的随机缩放范围
+            lifeScaleRandMax = f; // 1f
+            scaleLife = ; // 是否根据距离缩放存在时间
+            maxRange = f; // -1f 最大射程
+            rangeOverride = f; // -1f 强制射程
+            rangeChange = f; // 0f 炮塔射程改变量
+            extraRangeMargin = f; // 0f 额外射程余量
+            range = f; // 0f 初始化后的实际射程
+            minRangeChange = f; // 0f 最小射程改变量
+            // 速度
+            speed = f; // 1f 子弹速度
+            velocityScaleRandMin = f; // 1f 子弹速度的随机缩放范围
+            velocityScaleRandMax = f; // 1f
+            drag = f; // 0f 阻力大小
+            accel = f; // 0f 加速度大小
+            keepVelocity = ; // true 是否继承射手速度
+            // 伤害
+            damage = f; // 1f 直接命中伤害
+            optimalLifeFract = f; // 0f 达到最佳效果需要的时间
+            buildingDamageMultiplier = f; // 1f 对建筑伤害倍率
+            shieldDamageMultiplier = f; // 1f 对护盾伤害倍率
+            pierceArmor = ; // false 是否无视护甲
+            armorMultiplier = f; // 1f 目标护甲乘数
+            // 穿透
+            pierce = ; // 是否穿透单位
+            pierceBuilding = ; // 是否穿透建筑
+            pierceCap = ; // -1 最大穿透次数
+            pierceDamageFactor = f; // 0f 每次穿透后伤害衰减比例
+            maxDamageFraction = f; // -1f 对目标最大生命值的伤害上限比例
+            removeAfterPierce = ; // true 穿透次数耗尽后是否移除子弹
+            laserAbsorb = ; // true 是否被塑钢墙吸收(用于激光)
+            // 碰撞与消除
+            hitSize = f; // 4 碰撞箱大小
+            collidesTiles = ; // true 是否与地形碰撞
+            collidesTeam = ; // false 是否与同队单位碰撞
+            collidesAir = ; // true 是否与空中单位碰撞
+            collidesGround = ; // true 是否与地面单位碰撞
+            collides = ; // true 是否与任何东西碰撞
+            collideFloor = ; // false 是否与非实心地面碰撞
+            collideTerrain = ; // false 是否与静态墙碰撞
+            hittable = ; // true 是否能被点防消除
+            reflectable = ; // true 是否可被反射
+            absorbable = ; // true 是否可被护盾吸收
+            hitUnder = ; // false 是否命中下方的方块
+            // 其他属性
+            shootPattern = ; // null 射击模式
+            ammoMultiplier = f; // 2f 装填倍率
+            reloadMultiplier = f; // 1f 炮塔装填速度倍率
+            recoil = f; // 后坐力
+            killShooter = ; // 是否杀死射击者
+            instantDisappear = ; // 是否立即消失
+            targetBlocks = ; // true 是否锁定方块
+            targetMissiles = ; // true 是否锁定导弹
+            createChance = f; // 1 子弹生成概率
+            lifesteal = f; // 0f 生命偷取比例
+            setDefaults = ; // true 是否自动设置默认值
+            rotateSpeed = f; // 0f 子弹旋转速度
+
+            // 子弹移动轨迹部分
+            // 散布和偏移
+            angleOffset = f; // 0f 角度偏移
+            randomAngleOffset = f; // 0f 随机角度偏移
+            inaccuracy = f; // 0f 射击误差
+            ignoreSpawnAngle = ; // false 是否忽略生成角度
+            // 子弹环绕射击者
+            circleShooter = ; // false 是否环绕射击者
+            circleShooterRadius = f; // 13f 环绕半径
+            circleShooterRadiusSmooth = f; // 10f 平滑额外半径
+            circleShooterRotateSpeed = f; // 0.3f 环绕旋转速度
+            // 追踪
+            homingPower = f; // 0f 制导力度
+            homingRange = f; // 50f 制导范围
+            homingDelay = f; // -1f 制导延迟
+            followAimSpeed = f; // 0f 跟踪瞄准点的速度
+            // 子弹曲线飞行
+            weaveScale = f; // 1f 摆动曲线波长
+            weaveMag = f; // 0f 摆动曲线波强
+            weaveRandom = ; // true 是否随机初始摆动方向
+
+            // 击中效果部分
+            knockback = f; // 击退力度
+            impact = ; // 击退是否沿子弹方向
+            despawnHit = ; // false 消失时是否触发命中效果
+            // 溅射伤害
+            splashDamage = f; // 0f 溅射伤害
+            scaledSplashDamage = ; // false 是否根据单位体积缩放溅射伤害
+            splashDamageRadius = f; // -1f 溅射伤害半径
+            splashDamagePierce = ; // false 溅射伤害是否穿透方块
+            // 状态效果
+            status = StatusEffects.; // none 命中附加的状态效果
+            statusDuration = f; // 60 * 8f 状态效果持续时间
+            // 治疗相关
+            healPercent = f; // 0f 建筑生命恢复百分比
+            healAmount = f; // 0f 建筑生命恢复量
+            healColor = Color.valueOf(""); // Pal.heal 治疗效果颜色
+            healEffect = Fx.; // healBlockFull 治疗效果特效
+            suppressionRange = f; // -1f 修复压制范围
+            suppressionDuration = f; // 60f * 8f 修复压制持续时间
+            suppressionEffectChance = f; // 50f 修复压制触发概率
+            suppressColor = Color.valueOf(""); // Pal.sapBullet 修复压制效果颜色
+            // 黏附效果
+            sticky = ; // false 是否黏附在敌人身上
+            stickyExtraLifetime = f; // 0f 黏附后额外存在时间
+            // 火焰
+            makeFire = ; // false 是否产生火焰
+            incendAmount = ; // 0 尝试生成的火焰数量
+            incendSpread = f; // 8f 火焰的扩散程度
+            incendChance = f; // 1f 火焰生成概率
+            // 生成液体
+            puddles = ; // 生成的水坑数量
+            puddleRange = ; // 水坑生成范围
+            puddleAmount = f; // 5f 每个水坑的液体量
+            puddleLiquid = Liquids.; // water 水坑的液体类型
+
+            // 额外子弹部分
+            // 分裂子弹
+            fragOnHit = ; // true 命中时是否产生分裂子弹
+            fragOnDespawn = ; // true 消失时是否产生分裂子弹
+            fragOnAbsorb = ; // true 被护盾吸收时是否产生分裂子弹
+            delayFrags = ; // false 分裂子弹是否延迟生成
+            fragRandomSpread = f; // 360f 破片随机散布角度
+            fragSpread = f; // 0f 破片均匀散布角度
+            fragAngle = f; // 0f 破片角度偏移
+            fragBullets = ; // 9 破片数量
+            fragVelocityMin = f; // 0.2f 破片速度随机范围
+            fragVelocityMax = f; // 1f
+            fragLifeMin = f; // 1f 破片寿命随机范围
+            fragLifeMax = f; // 1f
+            fragOffsetMin = f; // 1f 破片位置偏移范围
+            fragOffsetMax = f; // 7f
+            pierceFragCap = ; // -1 穿透时生成碎片的次数上限
+            fragBullet = ; // null 分裂子弹类型
+            // 间隔生成子弹
+            bulletInterval = f; // 20f 间隔子弹生成的时间间隔
+            intervalBullets = ; // 1 每次生成的子弹数量
+            intervalRandomSpread = f; // 360f 间隔子弹随机散布
+            intervalSpread = f; // 0f 间隔子弹均匀散布
+            intervalAngle = f; // 0f 间隔子弹角度偏移
+            intervalDelay = f; // -1f 间隔子弹延迟
+            intervalBullet = ; // 间隔生成的子弹类型
+            // 生成时的装饰性子弹
+            spawnBulletRandomSpread = f; // 0f 生成子弹随机散布
+            spawnBullets = ; // 生成时额外生成的子弹, 用于视觉效果
+            // 生成单位
+            spawnUnit = ; // 替代子弹生成的单位
+            despawnUnit = ; // 消失时生成的单位
+            despawnUnitChance = f; // 1 消失时单位生成概率
+            despawnUnitCount = ; // 1 消失时单位生成的数量
+            despawnUnitRadius = f; // 0.1f 消失时单位生成半径
+            faceOutwards = ; // false 单位是否背对子弹方向
+            // 子弹产生的闪电效果
+            lightningColor = Color.valueOf(""); // Pal.surge 闪电颜色
+            lightning = ; // 闪电分支数量
+            lightningLength = ; // 5 闪电基础长度
+            lightningLengthRand = ; // 0 闪电随机额外长度
+            lightningDamage = f; // -1 闪电伤害
+            lightningCone = f; // 360f 闪电散布锥形角度
+            lightningAngle = f; // 0f 闪电角度偏移
+            lightningType = ; // null 闪电点生成的子弹类型
+
+            // 视觉效果与音效部分
+            // 部件
+            parts = ; // 额外视觉部件序列
+            // 渲染
+            drawSize = f; // 40f 子弹的渲染裁剪大小
+            layer = Layer.; // bullet 渲染层
+            underwater = f; // false 是否在水下渲染
+            // 粒子效果和颜色
+            hitEffect = Fx.; // hitBulletSmall 命中效果
+            hitColor = Color.valueOf(""); // white 命中效果颜色
+            despawnEffect = Fx.; // hitBulletSmall 消失效果
+            shootEffect = Fx.; // shootSmall 发射效果
+            chargeEffect = Fx.; // none 充能效果
+            smokeEffect = Fx.; // shootSmallSmoke 烟雾效果
+            // 屏幕震动
+            hitShake = f; // 0f 命中时的屏幕震动
+            despawnShake = f; // 0f 消失时的屏幕震动
+            // 光照
+            lightRadius = f; // -1f 光照半径
+            lightOpacity = f; // 0.3f 光照透明度
+            lightColor = Color.valueOf(""); // Pal.powerLight 光照颜色
+            // 尾迹
+            trailColor = Color.valueOf(""); // Pal.missileYellowBack 尾迹颜色
+            trailChance = f; // -0.0001f 每帧产生尾迹特效的概率
+            trailInterval = f; // 0f 尾迹特效生成间隔
+            trailMinVelocity = f; // 0f 产生尾迹的最小速度
+            trailEffect = Fx.; // missileTrail 尾迹特效
+            trailSpread = f; // 0f 尾迹随机偏移
+            trailParam = f; // 2f 尾迹特效参数
+            trailRotation = ; // false 是否用子弹旋转作为参数,而不是一个固定值
+            trailInterp = Interp.; // one 尾迹宽度插值函数
+            trailLength = ; // -1 尾迹长度
+            trailWidth = f; // 2f 尾迹宽度
+            trailSinMag = f; // 0f 尾迹宽度正弦波动幅度
+            trailSinScl = f; // 3f 尾迹宽度正弦波动频率
+            // 音效
+            shootSound = Sounds.; // none 发射音效
+            hitSound = Sounds.; // none 命中音效
+            hitSoundPitch = f; // 1 命中音效的音调
+            hitSoundPitchRange = f; // 0.1f 命中音效的音调范围
+            hitSoundVolume = f; // 1 命中音效的音量
+            despawnSound = Sounds.; // none 消失音效
+            healSound = Sounds.; // blockHeal 治疗音效
+            healSoundVolume = f; // 0.9f 治疗音效音量
+
+            // 信息显示部分
+            showStats = ; // false 是否显示统计信息
+            displayAmmoMultiplier = ; // true 是否显示弹药倍率
+            statLiquidConsumed = f; // 显示的液体消耗量
+            cachedDps = f; // -1 显示的DPS
+        }};
+        */
+
+
+// UnlockableContent
+            /*
+            alwaysUnlocked = ; // false 是否在科技树中始终解锁
+            inlineDescription = ; // true 是否在研究界面显示描述
+            hideDetails = ; // true 如果未在战役中解锁, 是否隐藏细节
+            hideDatabase = ; // false 是否在核心数据库中隐藏
+            allDatabaseTabs = ; // false 如果为真, 则在所有数据库标签页中显示
+            shownPlanets.add(Planets.); // 包含此内容的星球. 如果为空则按照物品需求决定一个星球, 目前仅对方块有用
+            databaseTabs.add(Planets.);
+            databaseCategory = ""; // default 数据库类别
+            databaseTag = ""; // default 数据库标签
+            */
