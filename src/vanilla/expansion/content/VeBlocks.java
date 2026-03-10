@@ -102,11 +102,11 @@ public class VeBlocks {
             ductJunction,
 
             //transport - cyclant
-            chromiumConveyor, chromiumSorter, cobaltRail, cobaltRailBridge, cobaltRailUnderflowGate, cobaltRailUnloader,
-                    rail, railJunction, railBridge, railRouter, railOverflowGate, railUnderflowGate, railUnloader,
+            rail, railJunction, railBridge, railRouter, railOverflowGate, railUnderflowGate, railUnloader,
                     silicideRail, silicideRailJunction, silicideRailBridge, silicideRailRouter, silicideRailOverflowGate, silicideRailUnderflowGate, silicideRailUnloader,
+                    chromiumConveyor, chromiumSorter, cobaltRail, cobaltRailBridge, cobaltRailUnderflowGate, cobaltRailUnloader,
 
-            stackRail, silicideStackRail, phaseUnloader, multiUnloader, massLauncher, massRialGun, warpDriver,
+            stackRail, silicideStackRail, phaseUnloader, multiUnloader, massLauncher, massRailgun, warpDriver,
 
             //transport - maress, sitrullus
             ferricConveyor, ferricConveyorArmored, ferricRail, magneticDuct, valveCross, ferricBridge, valveSort, valveInvertedSort, valveDistribute, valveOverflow, valveUnderflow, valveUnload,
@@ -2557,7 +2557,7 @@ public class VeBlocks {
             requirements(Category.distribution, ItemStack.with(Items.copper, 4, VeItems.silicide, 2));
             speed = 6f;
             capacity = 8;
-            displayedSpeed = 80f; // 60f / 6f * 8 = 80f
+            displayedSpeed = 72f; // 60f / 6f * 8 = 80f, 实测80帧下稳定72.0
             health = 280;
             armor = 16f;
             explosivenessScale = 1.5f;
@@ -2571,7 +2571,7 @@ public class VeBlocks {
             requirements(Category.distribution, ItemStack.with(Items.copper, 6, Items.lead, 6, VeItems.silicide, 6));
             speed = 40f; // -
             bufferCapacity = 30;
-            displayedSpeed = 15f;
+            displayedSpeed = 15f; // 60f / 40f * 30 = 45, 实测30帧下稳定15.0
             range = 4;
             fadeIn = false;
             moveArrows = false;
@@ -2666,6 +2666,717 @@ public class VeBlocks {
             requirements(Category.distribution, ItemStack.with(Items.beryllium, 3));
             speed = 4f;
             health = 120;
+        }};
+
+        rail = new Conveyor("rail") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 1));
+            speed = 0.09f;
+            displayedSpeed = 12f; // 60f * 0.09f / 0.4f = 13.5f, 实测120帧下在12.5到13.0之间波动
+            pushUnits = false;
+            ambientSound = Sounds.none;
+            health = 25;
+            researchCostMultiplier = 0.125f;
+            drawCracks = false;
+            hasShadow = false;
+            drawTeamOverlay = false;
+            }};
+
+        railJunction = new Junction("rail-junction") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 2));
+            speed = 10f;
+            capacity = 5;
+            displayedSpeed = 24f; // 60f / 10f * 5 = 30f 实测30帧下稳定25.0
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 6f;
+            squareSprite = false;
+            ((Conveyor) VeBlocks.rail).junctionReplacement = this;
+        }};
+
+        railBridge = new ItemBridge("rail-bridge") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 8, VeItems.aluminium, 8));
+            range = 4;
+            transportTime = 2f;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            itemCapacity = 10; // -
+            hasPower = false;
+            health = 80;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            squareSprite = false;
+            ((Conveyor) VeBlocks.rail).bridgeReplacement = this;
+        }};
+
+        railRouter = new DuctRouter("rail-router") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 4, VeItems.aluminium, 4));
+            speed = 2.5f;
+            solid = false; // -
+            researchCostMultiplier = 0.2f;
+            buildCostMultiplier = 4f;
+            squareSprite = false;
+            regionRotated1 = 1;
+        }};
+
+        railOverflowGate = new OverflowDuct("rail-overflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4));
+            speed = 2.5f;
+            solid = false; // -
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 4f;
+            squareSprite = false;
+        }};
+
+        railUnderflowGate = new OverflowDuct("rail-underflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4));
+            speed = 2.5f;
+            invert = true;
+            solid = false; // -
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 4f;
+            squareSprite = false;
+        }};
+
+        railUnloader = new DirectionalUnloader("rail-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.silicon, 10));
+            speed = 2.5f;
+            allowCoreUnload = true;
+            solid = false;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            squareSprite = false;
+            regionRotated1 = 1;
+        }};
+
+        silicideRail = new Conveyor("silicide-rail") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 1, VeItems.silicide, 1));
+            speed = 0.12f;
+            displayedSpeed = 15f; // 60f * 0.12f / 0.4f = 18f, 实测30帧下稳定15.0
+            pushUnits = false;
+            ambientSound = Sounds.none;
+            health = 230;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            crushDamageMultiplier = 0.05f;
+            drawCracks = false;
+            drawTeamOverlay = false;
+            hasShadow = false;
+        }};
+
+        silicideRailJunction = new Junction("silicide-rail-junction") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 2, VeItems.silicide, 1));
+            speed = 10f;
+            capacity = 10;
+            displayedSpeed = 54f; // 60f / 10f * 10 = 60f, 实测60帧下在54.5到55.0之间波动
+            health = 280;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 6f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+            ((Conveyor) VeBlocks.silicideRail).junctionReplacement = this;
+        }};
+
+        silicideRailBridge = new ItemBridge("silicide-rail-bridge") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 8, VeItems.aluminium, 8, VeItems.silicide, 5));
+            range = 4;
+            transportTime = 1f;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            itemCapacity = 10; // -
+            hasPower = false;
+            health = 400;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+            ((Conveyor) VeBlocks.silicideRail).bridgeReplacement = this;
+        }};
+
+        silicideRailRouter = new DuctRouter("silicide-rail-router") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 4, VeItems.aluminium, 4, VeItems.silicide, 3));
+            speed = 1.5f;
+            solid = false; // -
+            health = 340;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 4f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+            regionRotated1 = 1;
+        }};
+
+        silicideRailOverflowGate = new OverflowDuct("silicide-rail-overflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4, VeItems.silicide, 3));
+            speed = 1.5f;
+            solid = false; // -
+            health = 340;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 4f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+        }};
+
+        silicideRailUnderflowGate = new OverflowDuct("silicide-rail-underflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4, VeItems.silicide, 3));
+            speed = 1.5f;
+            invert = true;
+            solid = false; // -
+            health = 340;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 4f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+        }};
+
+        silicideRailUnloader = new DirectionalUnloader("silicide-rail-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.silicon, 10, VeItems.silicide, 5));
+            speed = 1.5f;
+            allowCoreUnload = true;
+            solid = false;
+            health = 400;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.05f;
+            squareSprite = false;
+            regionRotated1 = 1;
+        }};
+
+        chromiumConveyor = new ArmoredConveyor("chromium-conveyor") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 1, VeItems.chromium, 1));
+            speed = 0.12f;
+            displayedSpeed = 15f; // 60f * 0.12f / 0.4f = 18f, 实测30帧下稳定15.0
+            junctionReplacement = VeBlocks.railJunction;
+            bridgeReplacement = VeBlocks.railBridge;
+            health = 300;
+            armor = 10f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+            hasShadow = true;
+        }};
+
+        chromiumSorter = new Sorter("chromium-sorter") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 4, VeItems.chromium, 4));
+            health = 120;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        cobaltRail = new Conveyor("cobalt-rail") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 1, VeItems.cobalt, 1));
+            speed = 0.21f;
+            displayedSpeed = 24f; // 60f * 0.21f / 0.4f = 31.5f 实测60帧下稳定30.0, 但不同帧率运力变化规律不明显
+            pushUnits = false;
+            junctionReplacement = VeBlocks.railJunction;
+            ambientSound = Sounds.none;
+            health = 35;
+            researchCostMultiplier = 0.8f;
+            drawCracks = false;
+            drawTeamOverlay = false;
+            hasShadow = false;
+        }};
+
+        cobaltRailBridge = new ItemBridge("cobalt-rail-bridge") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 10, VeItems.cobalt, 10));
+            range = 7;
+            transportTime = 1f;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            itemCapacity = 10; // -
+            hasPower = false;
+            health = 150;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+            drawCracks = false;
+            drawTeamOverlay = false;
+            squareSprite = false;
+            hasShadow = true;
+            ((Conveyor) VeBlocks.cobaltRail).bridgeReplacement = this;
+        }};
+
+        cobaltRailUnderflowGate = new OverflowGate("cobalt-rail-underflow-gate") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.cobalt, 4));
+            invert = true;
+            buildCostMultiplier = 3f;
+            squareSprite = false;
+        }};
+
+        cobaltRailUnloader = new Unloader("cobalt-rail-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.silicon, 15, VeItems.cobalt, 10));
+            speed = 2.5f;
+            size = 1; // -
+            group = BlockGroup.transportation;
+            squareSprite = false;
+        }};
+
+        stackRail = new StackConveyor("stack-rail") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 1, Items.silicon, 1, VeItems.aluminium, 2));
+            speed = 0.08f;
+            itemCapacity = 10; // -
+            ambientSound = Sounds.none;
+            health = 200;
+            drawTeamOverlay = false;
+        }};
+
+        silicideStackRail = new StackConveyor("silicide-stack-rail") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 1, Items.silicon, 1, VeItems.silicide, 2));
+            speed = 0.12f;
+            itemCapacity = 10; // -
+            ambientSound = Sounds.none;
+            health = 500;
+            armor = 24f;
+            explosivenessScale = 1.5f;
+            flammabilityScale = 0f;
+            underBullets = true;
+            crushDamageMultiplier = 0.05f;
+            dumpTime = 1;
+            drawTeamOverlay = false;
+        }};
+
+        phaseUnloader = new Unloader("phase-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 25, Items.silicon, 30, Items.plastanium, 25, Items.phaseFabric, 15));
+            speed = 1f;
+            // health = 200;
+            size = 1; // -
+            group = BlockGroup.transportation;
+        }};
+
+        multiUnloader = new Unloader("multi-unloader") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 40, Items.graphite, 50, Items.silicon, 50, VeItems.cobalt, 40));
+            speed = 1f;
+            health = 500;
+            size = 3;
+            researchCostMultiplier = 0.4f;
+            group = BlockGroup.transportation;
+            dumpTime = 0;
+            squareSprite = false;
+        }};
+
+        massLauncher = new MassDriver("mass-launcher") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 60, Items.silicon, 55, VeItems.silicide, 30));
+            range = 320f;
+            rotateSpeed = 5f; // -
+            minDistribute = 30;
+            reload = 120f;
+            bulletSpeed = 9f;
+            shootEffect = new MultiEffect(
+                    Fx.shootBig,
+                    new ExplosionEffect() {{
+                        waveColor = Color.valueOf("ffd37f");
+                        sparkColor = Color.valueOf("ffd37f");
+                        waveStroke = 3f; // -
+                        waveRad = 18f;
+                    }}
+            );
+            smokeEffect = Fx.shootBigSmoke;
+            shootSound = Sounds.shootSalvo;
+            shake = 3f; // -
+            size = 2;
+            researchCostMultiplier = 0.03f;
+            itemCapacity = 90;
+            consumePower(1f);
+        }};
+
+        massRailgun = new MassDriver("mass-railgun") {{
+            requirements(Category.distribution, ItemStack.with(Items.lead, 170, Items.silicon, 115, VeItems.silicide, 60, VeItems.cobalt, 85));
+            range = 960f;
+            rotateSpeed = 2.5f;
+            minDistribute = 60;
+            reload = 180f;
+            bullet = new MassDriverBolt() {{
+                height = 30f;
+                despawnEffect = Fx.mineHuge;
+            }};
+            bulletSpeed = 15f;
+            shootEffect = new MultiEffect(
+                    Fx.blastExplosion,
+                    Fx.shootTitan,
+                    new ExplosionEffect() {{
+                        waveColor = Color.valueOf("ffd37f");
+                        sparkColor = Color.valueOf("ffd37f");
+                        waveStroke = 3f; // -
+                        waveRad = 24f;
+                    }}
+            );
+            smokeEffect = Fx.shootBigSmoke;
+            shootSound = Sounds.massdriver; // -
+            shake = 5f;
+            size = 4;
+            researchCostMultiplier = 0.03f;
+            itemCapacity = 360;
+            hasLiquids = true;
+            liquidCapacity = 90f;
+            dumpTime = 1;
+            consumeLiquid(Liquids.water, 12f / 60f);
+            consumePower(192f / 60f);
+        }};
+
+
+        /*
+        warpDriver = new MassDriver("warp-driver") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 30, VeItems.aluminium, 20, VeItems.warpNucleus, 10));
+            range = 240f;
+            rotateSpeed = 360f;
+            translation = 0f;
+            minDistribute = 10; // -
+            knockback = 0f;
+            reload = 40f;
+            bullet = new MassDriverBolt() {{
+                width = 0f;
+                height = 0f;
+                speed = 800f;
+                hitEffect = Fx.none;
+                despawnEffect = Fx.none;
+                backColor = frontColor = Color.valueOf("bf92f900");
+                collides = hittable = reflectable = absorbable = false;
+                hitSize = 1f;
+            }};
+            bulletSpeed = 800f;
+            shootEffect = new MultiEffect(
+                    new SoundEffect() {{
+                        sound = new RandomSound(
+                                // VeSounds.si2Teleporter1,
+                                // VeSounds.si2Teleporter2,
+                                // VeSounds.si2Teleporter3,
+                                // VeSounds.si2Teleporter4
+                        );
+                        minPitch = 1f;
+                        maxPitch = 1f;
+                        minVolume = 0.1f;
+                        maxVolume = 0.1f;
+                        effect = new ParticleEffect() {{
+                            colorFrom = Color.valueOf("bf92f9");
+                            colorTo = Color.valueOf("bf92f9");
+                            particles = 1;
+                            length = 0f;
+                            baseLength = 0f; // -
+                            interp = Interp.circleIn;
+                            sizeFrom = 2f; // -
+                            sizeTo = 0f; // -
+                            lifetime = 40f;
+                        }};
+                    }},
+                    new WaveEffect() {{
+                        colorFrom = Color.valueOf("bf92f9aa");
+                        colorTo = Color.valueOf("bf92f900");
+                        sizeFrom = 0f; // -
+                        sizeTo = 12f;
+                        sides = 24;
+                        strokeFrom = 2f; // -
+                        strokeTo = 0f; // -
+                        interp = Interp.circleOut;
+                        lifetime = 40f;
+                    }},
+                    new WaveEffect() {{
+                        colorFrom = Color.valueOf("bf92f9");
+                        colorTo = Color.valueOf("bf92f900");
+                        sizeFrom = 0f; // -
+                        sizeTo = 8f;
+                        sides = 24;
+                        strokeFrom = 2f; // -
+                        strokeTo = 2f;
+                        interp = Interp.circleOut;
+                        lifetime = 40f;
+                    }}
+            );
+            smokeEffect = Fx.none;
+            receiveEffect = new SoundEffect() {{
+                sound = new RandomSound(
+                        // VeSounds.si2Teleporter1,
+                        // VeSounds.si2Teleporter2,
+                        // VeSounds.si2Teleporter3,
+                        // VeSounds.si2Teleporter4
+                );
+                minPitch = 1f;
+                maxPitch = 1f;
+                minVolume = 0.1f;
+                maxVolume = 0.1f;
+                effect = new ParticleEffect() {{
+                    colorFrom = Color.valueOf("bf92f9");
+                    colorTo = Color.valueOf("bf92f9");
+                    particles = 1;
+                    cone = 0f;
+                    length = 0f;
+                    baseLength = 0f; // -
+                    interp = Interp.circleOut;
+                    sizeFrom = 2f; // -
+                    sizeTo = 0f; // -
+                    lifetime = 40f;
+                }};
+            }};
+            shootSound = Sounds.none;
+            receiveSound = Sounds.none;
+            shake = 0f;
+            outlineIcon = false;
+            health = 300;
+            baseExplosiveness = 7f;
+            size = 1; // -
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            itemCapacity = 100;
+            dumpTime = 1;
+            consumePower(36f / 60f);
+        }};
+        */
+        warpDriver = new MassDriver("warp-driver") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 30, VeItems.aluminium, 20, VeItems.warpNucleus, 10));
+            range = 240f;
+            rotateSpeed = 360f;
+            translation = 0f;
+            minDistribute = 10; // -
+            knockback = 0f;
+            reload = 40f;
+            bullet = new MassDriverBolt() {{
+                width = 0f;
+                height = 0f;
+                speed = 800f;
+                hitEffect = Fx.none;
+                despawnEffect = Fx.none;
+                backColor = frontColor = Color.valueOf("bf92f900");
+                collides = hittable = reflectable = absorbable = false;
+                hitSize = 1f;
+            }};
+            bulletSpeed = 800f;
+            shootEffect = new MultiEffect(
+                    new SoundEffect() {{
+                        minPitch = 1f;
+                        maxPitch = 1f;
+                        minVolume = 0.1f;
+                        maxVolume = 0.1f;
+                        effect = new ParticleEffect() {{
+                            colorFrom = Color.valueOf("bf92f9");
+                            colorTo = Color.valueOf("bf92f9");
+                            particles = 1;
+                            length = 0f;
+                            baseLength = 0f; // -
+                            interp = Interp.circleIn;
+                            sizeFrom = 2f; // -
+                            sizeTo = 0f; // -
+                            lifetime = 40f;
+                        }};
+                    }},
+                    new WaveEffect() {{
+                        colorFrom = Color.valueOf("bf92f9aa");
+                        colorTo = Color.valueOf("bf92f900");
+                        sizeFrom = 0f; // -
+                        sizeTo = 12f;
+                        sides = 24;
+                        strokeFrom = 2f; // -
+                        strokeTo = 0f; // -
+                        interp = Interp.circleOut;
+                        lifetime = 40f;
+                    }},
+                    new WaveEffect() {{
+                        colorFrom = Color.valueOf("bf92f9");
+                        colorTo = Color.valueOf("bf92f900");
+                        sizeFrom = 0f; // -
+                        sizeTo = 8f;
+                        sides = 24;
+                        strokeFrom = 2f; // -
+                        strokeTo = 2f;
+                        interp = Interp.circleOut;
+                        lifetime = 40f;
+                    }}
+            );
+            smokeEffect = Fx.none;
+            receiveEffect = new SoundEffect() {{
+                minPitch = 1f;
+                maxPitch = 1f;
+                minVolume = 0.1f;
+                maxVolume = 0.1f;
+                effect = new ParticleEffect() {{
+                    colorFrom = Color.valueOf("bf92f9");
+                    colorTo = Color.valueOf("bf92f9");
+                    particles = 1;
+                    cone = 0f;
+                    length = 0f;
+                    baseLength = 0f; // -
+                    interp = Interp.circleOut;
+                    sizeFrom = 2f; // -
+                    sizeTo = 0f; // -
+                    lifetime = 40f;
+                }};
+            }};
+            shootSound = Sounds.none;
+            receiveSound = Sounds.none;
+            shake = 0f;
+            outlineIcon = false;
+            health = 300;
+            baseExplosiveness = 7f;
+            size = 1; // -
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            itemCapacity = 100;
+            dumpTime = 1;
+            consumePower(36f / 60f);
+        }};
+
+
+        ferricConveyor = new Conveyor("ferric-conveyor") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.ferrum, 1));
+            speed = 0.12f;
+            displayedSpeed = 15f; // 60f * 0.12f / 0.4f = 18f, 实测30帧下稳定15.0
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 1.5f;
+            crushDamageMultiplier = 0.2f;
+            hasShadow = true;
+        }};
+
+        ferricConveyorArmored = new ArmoredConveyor("ferric-conveyor-armored") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.ferrum, 2));
+            speed = 0.12f;
+            displayedSpeed = 15f; // 60f * 0.12f / 0.4f = 18f, 实测30帧下稳定15.0
+            health = 180;
+            armor = 6f;
+            buildCostMultiplier = 1.5f;
+            crushDamageMultiplier = 0.2f;
+            hasShadow = true;
+        }};
+
+        ferricRail = new ArmoredConveyor("ferric-rail") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 1, VeItems.ferrum, 1));
+            speed = 0.12f;
+            displayedSpeed = 15f; // 60f * 0.12f / 0.4f = 18f, 实测30帧下稳定15.0
+            pushUnits = false;
+            ambientSound = Sounds.none;
+            health = 120;
+            armor = 6f;
+            crushDamageMultiplier = 0.2f;
+            drawCracks = false;
+            drawTeamOverlay = false;
+            hasShadow = false;
+        }};
+
+        /*
+        magneticDuct = new Duct("magnetic-duct") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.astroPlate, 1, VeItems.phecteel, 1));
+            speed = 1f;
+            armored = ;
+            transparentColor = Color.valueOf("");
+            bridgeReplacement = Blocks.;
+            junctionReplacement = Blocks.;
+            health = 300;
+            armor = 32f;
+            crushDamageMultiplier = 0f;
+            // hidden = true;
+        }};
+        */
+
+        valveCross = new Junction("valve-cross") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.ferrum, 2));
+            speed = 10f;
+            capacity = 5;
+            displayedSpeed = 25f; // 60f / 10f * 5 = 30f, 实测30帧下稳定25.0
+            buildCostMultiplier = 4f;
+            ((Conveyor) VeBlocks.ferricConveyor).junctionReplacement =
+                    ((ArmoredConveyor) VeBlocks.ferricConveyorArmored).junctionReplacement =
+                            ((ArmoredConveyor) VeBlocks.ferricRail).junctionReplacement = this;
+        }};
+
+        ferricBridge = new ItemBridge("ferric-bridge") {{
+            requirements(Category.distribution, ItemStack.with(Items.graphite, 4, VeItems.ferrum, 6));
+            range = 4;
+            transportTime = 2f;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 8f;
+            arrowOffset = 4f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 2f;
+            bridgeWidth = 8f;
+            itemCapacity = 10; // -
+            hasPower = false;
+            health = 300;
+            armor = 6f;
+            researchCostMultiplier = 0.1f;
+            buildCostMultiplier = 3f;
+            squareSprite = false;
+            ((Conveyor) VeBlocks.ferricConveyor).bridgeReplacement =
+                    ((ArmoredConveyor) VeBlocks.ferricConveyorArmored).bridgeReplacement =
+                            ((ArmoredConveyor) VeBlocks.ferricRail).bridgeReplacement = this;
+        }};
+
+        valveSort = new Sorter("valve-sort") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 2, VeItems.ferrum, 3));
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        valveInvertedSort = new Sorter("valve-inverted-sort") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 2, VeItems.ferrum, 3));
+            invert = true;
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        valveDistribute = new Router("valve-distribute") {{
+            requirements(Category.distribution, ItemStack.with(VeItems.ferrum, 4));
+            speed = 2f;
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 4f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        valveOverflow = new OverflowGate("valve-overflow") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 1, VeItems.ferrum, 4));
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        valveUnderflow = new OverflowGate("valve-underflow") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 1, VeItems.ferrum, 4));
+            invert = true;
+            health = 120;
+            armor = 6f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.2f;
+        }};
+
+        valveUnload = new Unloader("valve-unload") {{
+            requirements(Category.distribution, ItemStack.with(Items.silicon, 15, VeItems.ferrum, 15));
+            speed = 2f;
+            health = 400;
+            armor = 6f;
+            size = 1; // -
+            group = BlockGroup.transportation;
+            crushDamageMultiplier = 0.2f;
         }};
 
         /*
@@ -2878,306 +3589,7 @@ public class VeBlocks {
         */
 
         /*
-        distribution = new ("") {{
-            // = new Conveyor("") {{
-                // = new ArmoredConveyor("") {{
-                noSideBlend = true;
-
-            itemSpace = f; // 0.4f 物品之间的最小间隔
-            capacity = ; // 3 每节传送带最多容纳的物品数量
-            speed = f; // 0f 运输速率
-            displayedSpeed = f; // 0f 显示的速率
-            pushUnits = ; // true 是否推动站在上面的单位
-            junctionReplacement = Blocks.; // 交叉器
-            bridgeReplacement = Blocks.; // 桥
-            // Block
-            update = true; // 该方块是否具有持续更新的方块实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            conveyorPlacement = true; // 是否使用传送带式放置模式
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            rotate = true; // 是否可旋转
-            noUpdateDisabled = false; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = capacity; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
-            ambientSoundVolume = 0.0022f; // 0.05f 空闲音效音量
-
-            // = new StackConveyor("") {{
-            glowAlpha = f; // 1f 发光透明度
-            glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
-            baseEfficiency = f; // 0f 基础运力倍率, 强化后倍率为 this +1
-            speed = f; // 0f 运输速率, 运力 = 单次装载数 * this * 60f
-            outputRouter = ; // true 是否输出到路由器
-            recharge = f; // 2f 填满一条线所需的最小装载点数量
-            loadEffect = Fx.; // conveyorPoof 装载时的粒子效果
-            unloadEffect = Fx.; // conveyorPoof 卸载时的粒子效果
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            conveyorPlacement = true; // 是否使用传送带式放置模式
-            rotate = true; // 是否可旋转
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 10; // 10 物品容量
-            ambientSound = Sounds.loopConveyor; // none 空闲时发出的声音
-            ambientSoundVolume = 0.004f; // 0.05f 空闲音效音量
-
-            // = new Junction("") {{
-            speed = f; // 26 物品经过需要的时间
-            capacity = ; // 6 物品容量
-            displayedSpeed = f; // 13f 显示的速率
-            // Block
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new ItemBridge("") {{
-                // = new BufferedItemBridge("") {{
-                speed = f; // 40f 物品经过需要的时间
-                bufferCapacity = ; // 50 缓冲区容量
-                displayedSpeed = f; // 11f 显示给玩家的速度
-                // Block
-                canOverdrive = true; // true 能否超速
-                hasItems = true; // 是否拥有物品模块
-                hasPower = false; // 是否拥有电力模块
-
-            range = ; // 最大连接距离
-            transportTime = f; // 物品从一端传输到另一端所需的时间
-            fadeIn = ; // true 是否渐显
-            moveArrows = ; // true 是否显示移动的箭头
-            pulse = ; // false 是否启用脉冲效果
-            arrowSpacing = f; // 4f 箭头之间的间隔距离
-            arrowOffset = f; // 2f 箭头位置的偏移量
-            arrowPeriod = f; // 0.4f 箭头动画周期
-            arrowTimeScl = f; // 6.2f 箭头动画时间缩放
-            bridgeWidth = f; // 6.5f 桥身绘制的宽度
-            // Block
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = true; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            delayLandingConfig = true; // 如果为true, 则在着陆构建动画中, 该方块的配置操作会被延迟, 未来可能会被移除
-            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            copyConfig = false; // true 能否通过选取操作复制配置
-            allowConfigInventory = false; // true 物品库存是否与配置界面一起显示
-            ignoreResizeConfig = true; // 如果为true, 在地图大小改变时, 不会有名为transform的点配置
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            configurable = true; // false 能否被逻辑配置
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 10; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-            hasPower = true; // 是否拥有电力模块
-
-            // = new Sorter("") {{
-            invert = ; // 效果反向
-            // Block
-            update = false; // 该方块是否具有持续更新的方块实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
-            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
-            clearOnDoubleTap = true; // true 能否通过双击清除配置
-            configurable = true;  // 能否被点击并打开配置界面
-            unloadable = false; // true 装卸器能否作用于该方块
-            instantTransfer = true; // false 是否支持瞬时传输(光传)
-
-            // = new Router("") {{
-            speed = f; // 8f
-            // Block
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 1; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new OverflowGate("") {{
-            speed = f; // 1f
-            invert = ; // false 效果反向
-            // Block
-            canOverdrive = false; // true 能否超速
-            update = false; // 该方块是否具有持续更新的方块实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            destructible = true; // 该方块是否具有生命值并可摧毁. update为true时, 该项为false不会有任何效果
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 0; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-            instantTransfer = true; // false 是否支持瞬时传输(光传)
-
-            // = new Unloader("") {{
-            speed = f; // 1f 每次装卸的时间间隔
-            allowCoreUnload = ; // true 能否从核心卸载
-            // Block
-            health = 70; // -1 生命值, 跳过scaledHealth
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = true; // 是否为实体
-            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
-            clearOnDoubleTap = true; // true 能否通过双击清除配置
-            configurable = true; // 能否被点击并打开配置界面
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 0; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new Duct("") {{
-            speed = f; // 5f 两次物品运输之间的时间间隔
-            armored = ; // false 是否具有装甲
-            transparentColor = Color.valueOf(""); // 管道颜色
-            bridgeReplacement = Blocks.; // 交叉器
-            junctionReplacement = Blocks.; // 桥
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            conveyorPlacement = true; // 是否使用传送带式放置模式
-            rotate = true; // 是否可旋转
-            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 1; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-            noSideBlend = true; // false 是否接受来自侧面的输入
-            isDuct = true; // false 该方块是否为管道
-
-            // = new DuctJunction("") {{
-            transparentColor = Color.valueOf(""); // 管道颜色
-            speed = f; // 5f 两次物品运输之间的时间间隔
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            floating = true; // false 是否可以放置在液体边缘
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new DuctBridge("") {{
-            speed = 5f; // 物品运输的时间间隔
-            // Block-1
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 4; // 10 物品容量
-            isDuct = true; // false 该方块是否为管道
-            // DirectionBridge
-            range = ; // 4 最大连接距离
-            // Block-2
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = true; // 是否为实体
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            rotate = true; // 是否可旋转
-            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            drawArrow = false; // true 是否绘制旋转箭头
-
-            // = new DuctRouter("") {{
-                // = new StackRouter("") {{
-                baseEfficiency = f; // 0f 基础效率
-                glowAlpha = f; // 1f 发光透明度
-                glowColor = Color.valueOf(""); // Pal.redLight 发光颜色
-                // Block
-                itemCapacity = 10; // 10 物品容量
-
-            speed = f; // 5f 两次物品运输之间的时间间隔
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            rotate = true; // 是否可旋转
-            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
-            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
-            clearOnDoubleTap = true; // true 能否通过双击清除配置
-            configurable = true; // 能否被点击并打开配置界面
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 1; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new OverflowDuct("") {{
-            speed = f; // 5f 两次物品运输之间的时间间隔
-            invert = ; // false 效果反向
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = false; // 是否为实体
-            underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            conveyorPlacement = true; // 是否使用传送带式放置模式
-            rotate = true; // 是否可旋转
-            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 1; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-
-            // = new DirectionalUnloader("") {{
-            speed = f; // 1f 两次物品运输之间的时间间隔
-            allowCoreUnload = ; // false 能否从核心卸载
-            // Block
-            priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = true; // 是否为实体
-            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
-            rotate = true; // 是否可旋转
-            envDisabled = Env.none; // 0 无法运行的环境
-            clearOnDoubleTap = true; // true 能否通过双击清除配置
-            saveConfig = true; // false 是否保存上一次的配置并应用到新方块
-            configurable = true; // 能否被点击并打开配置界面
-            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
-            hasItems = true; // 是否拥有物品模块
-            itemCapacity = 0; // 10 物品容量
-            unloadable = false; // true 装卸器能否作用于该方块
-            isDuct = true; // false 该方块是否为管道
-
-            // = new MassDriver("") {{
-            range = f; // 最大传输距离
-            rotateSpeed = f; // 5f 旋转速度
-            translation = f; // 7f 后坐力位移
-            minDistribute = ; // 10 最小发送数量
-            knockback = f; // 4f 后坐力强度
-            reload = f; // 100f 装填时间
-            bullet = new MassDriverBolt(); // 发射的子弹类型
-            bulletSpeed = f; // 5.5f 子弹飞行速度
-            bulletLifetime = f; // 200f 子弹最长存在时间
-            shootEffect = Fx.; // shootBig2 发射特效
-            smokeEffect = Fx.; // shootBigSmoke2 烟雾特效
-            receiveEffect = Fx.; // mineBig 接收特效
-            shootSound = Sounds.; // massdriver 发射音效
-            receiveSound = Sounds.; // massdriverReceive 接收音效
-            shootSoundVolume = f; // 0.5f 发射音量
-            shake = f; // 3f 屏幕震动强度
-            // Block
-            update = true; // 该方块是否具有持续更新的方块实体
-            solid = true; // 是否为实体
-            sync = true; // 是否需要周期性的在网络中同步
-            envEnabled |= Env.space; // Env.terrestrial 可运行环境
-            configurable = true; // 能否被点击并打开配置界面
-            hasItems = true; // 是否拥有物品模块
-            hasPower = true; // 是否拥有电力模块
-            outlineIcon = true; // false 是否有图标轮廓
-        }};
-        */
-
-        /*
-        liquid = new () {{
+        liquid = new LiquidBlock("") {{
 
             // = new DirectionLiquidBridge("") {{
             speed = f; // 5f 液体传输速度
@@ -3204,90 +3616,6 @@ public class VeBlocks {
 
         }};
         */
-
-        rail = new Conveyor("rail") {{
-            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 1));
-            speed = 0.09f;
-            displayedSpeed = 12f;
-            pushUnits = false;
-            junctionReplacement = railJunction;
-            bridgeReplacement = railBridge;
-            drawTeamOverlay = false;
-            health = 25;
-            hasShadow = false;
-            drawCracks = false;
-            researchCostMultiplier = 0.125f;
-            // shownPlanets.addAll(VePlanets.cyclant, VePlanets.maress);
-        }};
-
-        railJunction = new Junction("rail-junction") {{
-            requirements(Category.distribution, ItemStack.with(VeItems.aluminium, 2));
-            speed = 10f;
-            capacity = 5;
-            squareSprite = false;
-            buildCostMultiplier = 6f;
-            researchCostMultiplier = 0.1f;
-            ((Conveyor)VeBlocks.rail).junctionReplacement = this;
-        }};
-
-        railBridge = new ItemBridge("rail-bridge") {{
-            requirements(Category.distribution, ItemStack.with(Items.lead, 8, VeItems.aluminium, 8));
-            range = 4;
-            transportTime = 2f;
-            fadeIn = false;
-            moveArrows = false;
-            arrowSpacing = 2f;
-            arrowPeriod = 1.6f;
-            arrowTimeScl = 3f;
-            bridgeWidth = 8f;
-            hasPower = false;
-            itemCapacity = 10;
-            squareSprite = false;
-            health = 80;
-            buildCostMultiplier = 3f;
-            researchCostMultiplier = 0.1f;
-            ((Conveyor)rail).bridgeReplacement = this;
-        }};
-
-        railRouter = new DuctRouter("rail-router") {{
-            requirements(Category.distribution, ItemStack.with(Items.lead, 4, VeItems.aluminium, 4));
-            speed = 2.5f;
-            solid = false;
-            squareSprite = false;
-            buildCostMultiplier = 4f;
-            researchCostMultiplier = 0.2f;
-            regionRotated1 = 1;
-        }};
-
-        railOverflowGate = new OverflowDuct("rail-overflow-gate") {{
-            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4));
-            speed = 2.5f;
-            solid = false;
-            squareSprite = false;
-            buildCostMultiplier = 4f;
-            researchCostMultiplier = 0.1f;
-        }};
-
-        railUnderflowGate = new OverflowDuct("rail-underflow-gate") {{
-            requirements(Category.distribution, ItemStack.with(Items.lead, 2, VeItems.aluminium, 4));
-            speed = 2.5f;
-            invert = true;
-            solid = false;
-            squareSprite = false;
-            buildCostMultiplier = 4f;
-            researchCostMultiplier = 0.1f;
-        }};
-
-        railUnloader = new DirectionalUnloader("rail-unloader") {{
-            requirements(Category.distribution, ItemStack.with(Items.graphite, 10, Items.silicon, 10));
-            speed = 2.5f;
-            allowCoreUnload = true;
-            solid = false;
-            squareSprite = false;
-            buildCostMultiplier = 3f;
-            researchCostMultiplier = 0.1f;
-            regionRotated1 = 1;
-        }};
 
         aluminiumWall = new Wall("aluminium-wall") {{
             requirements(Category.defense, ItemStack.with(VeItems.aluminium, 6));
