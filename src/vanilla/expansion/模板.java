@@ -1512,6 +1512,115 @@
         }};
         */
 
+// Liquid
+        /*
+        liquid = new LiquidBlock("") {{
+            // = new LiquidBlock("") {{
+                // = new Pump("") {{
+                    // = new SolidPump("") {{
+                        // = new Fracker("") {{
+                        itemUseTime = f; // 100f 物品消耗时间
+                        // Block
+                        envRequired |= Env.groundOil; // 0 必要环境
+                        hasItems = true; // 是否拥有物品模块
+                        ambientSound = Sounds.loopDrill; // none 空闲时发出的声音
+                        ambientSoundVolume = 0.03f; // 0.05f 空闲音效音量
+
+                    result = Liquids.; // water 抽取的液体类型
+                    updateEffect = Fx.; // none 工作特效
+                    updateEffectChance = f; // 0.02f 特效触发概率
+                    rotateSpeed = f; // 1f 转子旋转速度
+                    baseEfficiency = f; // 1f 基础效率
+                    attribute = Attribute.; // 增产属性类型
+                    // Block
+                    envEnabled = Env.terrestrial; // Env.terrestrial 可运行环境
+                    hasPower = true; // 是否拥有电力模块
+
+                pumpAmount = f / 60f; // 0.2f 每格每帧泵量
+                consumeTime = f; // 60f * 5f 额外消耗的时间间隔
+                warmupSpeed = f; // 0.019f 预热速度
+                // Block
+                update = true; // 该方块是否具有持续更新的方块实体
+                solid = true; // 是否为实体
+                group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+                envEnabled |= Env.space | Env.underwater; // Env.terrestrial 可运行环境
+                hasLiquids = true; // 是否拥有液体模块
+                outputsLiquid = true; // false 是否输出液体
+
+                // = new Conduit("") {{
+                    // = new ArmoredConduit("") {{
+                    // Conduit
+                    leaks = false;
+
+                rotatePad = f; // 6f 旋转偏移值
+                hpad = f; // rotatePad / 2f / 4f 半偏移值
+                botColor = Color.valueOf(""); // 565656 管道底部颜色
+                padCorners = ; // true 是否填充边角
+                leaks = ; // true 是否会泄漏液体
+                junctionReplacement = ; // 交叉器
+                bridgeReplacement = ; // 桥
+                rotBridgeReplacement = ; // 旋转桥
+                // Block
+                canOverdrive = false; // true 能否超速
+                priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+                solid = false; // 是否为实体
+                underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+                floating = true; // false 是否可以放置在液体边缘
+                conveyorPlacement = true; // 是否使用传送带式放置模式
+                rotate = true; // 是否可旋转
+                noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+
+                // = new LiquidRouter("") {{
+                liquidPadding = f; // 0f 液体填充
+                // Block
+                canOverdrive = false; // true 能否超速
+                solid = true; // 是否为实体
+                floating = true; // false 是否可以放置在液体边缘
+                noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            envEnabled |= Env.space | Env.underwater; // Env.terrestrial 可运行环境
+            hasLiquids = true; // 是否拥有液体模块
+            outputsLiquid = true; // false 是否输出液体
+
+            // = new LiquidBridge("") {{
+            // Block
+            canOverdrive = false; // true 能否超速
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            envEnabled = Env.any; // Env.terrestrial 可运行环境
+            hasItems = false; // 是否拥有物品模块
+            hasLiquids = true; // 是否拥有液体模块
+            outputsLiquid = true; // false 是否输出液体
+
+            // = new DirectionLiquidBridge("") {{
+            speed = f; // 5f 液体传输速度
+            liquidPadding = f; // 1f 液体缓冲量
+            // Block-1
+            canOverdrive = false; // true 能否超速
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            hasLiquids = true; // 是否拥有液体模块
+            liquidCapacity = 20f; // -1f 液体容量
+            outputsLiquid = true; // false 是否输出液体
+            // DirectionBridge
+            range = ; // 4 最大连接距离
+            // Block-2
+            solid = true; // 是否为实体
+            group = BlockGroup.transportation; // 属于哪个组, 同组方块可以相互替换
+            allowDiagonal = false; // true 能否使用对角线放置模式(ctrl)
+            priority = TargetPriority.transport; // 0 蓝图建造优先级
+            rotate = true; // 是否可旋转
+            envEnabled = Env.space | Env.terrestrial | Env.underwater; // Env.terrestrial 可运行环境
+            noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+            update = true; // 该方块是否具有持续更新的方块实体
+            drawArrow = false; // true 是否绘制旋转箭头
+
+
+        }};
+        */
+
 // 其他
         /*
         block = new TreeBlock("") {{

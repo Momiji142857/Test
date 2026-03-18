@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.math.Interp;
 import arc.struct.Seq;
 import mindustry.content.*;
+import mindustry.entities.TargetPriority;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.DrawPart;
@@ -24,13 +25,17 @@ import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.storage.Unloader;
+import mindustry.world.consumers.ConsumeCoolant;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import vanilla.expansion.VanillaExpansion;
+
+import static arc.input.KeyCode.f;
 
 public class VeBlocks {
 
@@ -103,12 +108,11 @@ public class VeBlocks {
             ferricConveyor, ferricConveyorArmored, ferricRail, magneticDuct, valveCross, ferricBridge, valveSort, valveInvertedSort, valveDistribute, valveOverflow, valveUnderflow, valveUnload,
 
             //liquid
-            silicidePlatedConduit,
-
             isomorphicPump, platformPump, pressurePump,
-                    isomorphicConduit, fluidJunction, isomorphicBridgeConduit,fluidRouter, can, tank,
+                    isomorphicConduit, fluidJunction, isomorphicBridgeConduit, fluidRouter, can, tank,
                     pressureConduit, platformBridgeConduit,
-                    silicideConduit, silicideFluidJunction, silicideBridgeConduit,silicideFluidRouter, canSilicide, tankSilicide,
+                    silicidePlatedConduit,
+                    silicideConduit, silicideFluidJunction, silicideBridgeConduit, silicideFluidRouter, canSilicide, tankSilicide,
 
             //liquid - maress, sitrullus
             chainedPump,
@@ -2968,7 +2972,7 @@ public class VeBlocks {
             size = 3;
             researchCostMultiplier = 0.4f;
             group = BlockGroup.transportation;
-            dumpTime = 0;
+            dumpTime = 1;
             squareSprite = false;
         }};
 
@@ -3370,6 +3374,236 @@ public class VeBlocks {
             crushDamageMultiplier = 0.2f;
         }};
 
+        isomorphicPump = new Pump("isomorphic-pump") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 12, VeItems.aluminium, 10));
+            pumpAmount = 8f / 60f;
+            warmupSpeed = 0.015f;
+            researchCostMultiplier = 0.1f;
+            squareSprite = false;
+        }};
+
+        platformPump = new Pump("platform-pump") {{
+            requirements(Category.liquid, ItemStack.with(Items.lead, 20, Items.metaglass, 50, VeItems.chromium, 60));
+            pumpAmount = 15f / 60f;
+            warmupSpeed = 0.02f;
+            health = 335;
+            armor = 6f;
+            size = 2;
+            researchCostMultiplier = 0.5f;
+            placeableLiquid = true;
+            floating = true;
+            crushDamageMultiplier = 0.2f;
+            liquidCapacity = 300f;
+            hasPower = true;
+            conductivePower = true;
+            squareSprite = false;
+            consume(new ConsumeCoolant(0f) {{
+                maxTemp = 10f;
+                maxFlammability = 10f;
+                optional = true;
+                booster = false;
+            }});
+            consumePower(18f / 60f);
+        }};
+
+        pressurePump = new Pump("pressure-pump") {{
+            requirements(Category.liquid, ItemStack.with(Items.lead, 30, VeItems.chromium, 40));
+            pumpAmount = 24f / 60f;
+            warmupSpeed = 0.02f;
+            armor = 5f;
+            size = 2;
+            researchCostMultiplier = 0.3f;
+            crushDamageMultiplier = 0.2f;
+            liquidCapacity = 150f;
+            hasPower = true;
+            consumePower(30f / 60f);
+            squareSprite = false;
+        }};
+
+        isomorphicConduit = new Conduit("isomorphic-conduit") {{
+            requirements(Category.liquid, ItemStack.with(VeItems.aluminium, 2));
+            health = 40;
+            drawTeamOverlay = false;
+        }};
+
+        fluidJunction = new LiquidJunction("fluid-junction") {{
+            requirements(Category.liquid, ItemStack.with(Items.graphite, 4, VeItems.aluminium, 12));
+            health = 40;
+            solid = false;
+            ((Conduit) VeBlocks.isomorphicConduit).junctionReplacement = this;
+        }};
+
+        isomorphicBridgeConduit = new LiquidBridge("isomorphic-bridge-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.graphite, 4, VeItems.aluminium, 20));
+            range = 4;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            health = 40;
+            buildCostMultiplier = 3f;
+            hasPower = false;
+            squareSprite = false;
+            ((Conduit) VeBlocks.isomorphicConduit).bridgeReplacement = this;
+        }};
+
+        fluidRouter = new LiquidRouter("fluid-router") {{
+            requirements(Category.liquid, ItemStack.with(Items.graphite, 4, VeItems.aluminium, 8));
+            liquidPadding = 2f; // 0f 液体填充
+            health = 40;
+            liquidCapacity = 80f;
+            squareSprite = true;
+        }};
+
+        can = new LiquidRouter("can") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 10, VeItems.chromium, 15));
+            armor = 6f;
+            size = 2;
+            solid = true;
+            liquidCapacity = 800f;
+            squareSprite = true;
+        }};
+
+        tank = new LiquidRouter("tank") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 20, VeItems.chromium, 50));
+            armor = 6f;
+            size = 3;
+            solid = true;
+            liquidCapacity = 2200f;
+            squareSprite = true;
+        }};
+
+        pressureConduit = new ArmoredConduit("pressure-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 1, VeItems.chromium, 1));
+            junctionReplacement = VeBlocks.fluidJunction;
+            bridgeReplacement = VeBlocks.isomorphicBridgeConduit;
+            health = 230;
+            armor = 16f;
+            crushDamageMultiplier = 0.2f;
+            liquidCapacity = 80f;
+            liquidPressure = 5f;
+            drawTeamOverlay = false;
+        }};
+
+        platformBridgeConduit = new LiquidBridge("platform-bridge-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 10, VeItems.chromium, 10));
+            range = 8;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 2f;
+            arrowPeriod = 1.6f;
+            arrowTimeScl = 3f;
+            bridgeWidth = 8f;
+            health = 300;
+            armor = 6f;
+            placeableLiquid = true;
+            floating = true;
+            buildCostMultiplier = 3f;
+            liquidCapacity = 150f;
+            hasPower = false;
+            squareSprite = false;
+        }};
+
+        silicidePlatedConduit = new ArmoredConduit("silicide-plated-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 1, Items.titanium, 1, Items.thorium, 1, VeItems.silicide, 1));
+            health = 460;
+            armor = 16f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            liquidCapacity = 16f;
+            liquidPressure = 1.025f;
+            crushDamageMultiplier = 0.05f;
+        }};
+
+        silicideConduit = new Conduit("silicide-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 1, Items.titanium, 1, VeItems.silicide, 1));
+            health = 280;
+            armor = 16f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            liquidCapacity = 16f;
+            liquidPressure = 1.025f;
+            crushDamageMultiplier = 0.05f;
+            drawTeamOverlay = false;
+        }};
+
+        silicideFluidJunction = new LiquidJunction("silicide-fluid-junction") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 8, Items.graphite, 4, Items.titanium, 4, VeItems.silicide, 4));
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            solid = false;
+            crushDamageMultiplier = 0.05f;
+            ((ArmoredConduit) VeBlocks.silicidePlatedConduit).junctionReplacement =
+                    ((Conduit) VeBlocks.silicideConduit).junctionReplacement = this;
+        }};
+
+        silicideBridgeConduit = new LiquidBridge("silicide-bridge-conduit") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 8, Items.graphite, 4, Items.titanium, 4, VeItems.silicide, 4));
+            range = 4;
+            fadeIn = false;
+            moveArrows = false;
+            arrowSpacing = 6f;
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            buildCostMultiplier = 3f;
+            crushDamageMultiplier = 0.05f;
+            liquidCapacity = 70f;
+            hasPower = false;
+            ((ArmoredConduit) VeBlocks.silicidePlatedConduit).bridgeReplacement =
+                    ((Conduit) VeBlocks.silicideConduit).bridgeReplacement = this;
+        }};
+
+        silicideFluidRouter = new LiquidRouter("silicide-fluid-router") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 2, Items.graphite, 4, Items.titanium, 4, VeItems.silicide, 4));
+            health = 370;
+            armor = 16f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            solid = false;
+            underBullets = true;
+            crushDamageMultiplier = 0.05f;
+            liquidCapacity = 200f;
+        }};
+
+        canSilicide = new LiquidRouter("can-silicide") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 10, VeItems.silicide, 30, VeItems.chromium, 30));
+            health = 2000;
+            armor = 24f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            size = 2;
+            solid = true;
+            crushDamageMultiplier = 0.05f;
+            liquidCapacity = 800f;
+        }};
+
+        tankSilicide = new LiquidRouter("tank-silicide") {{
+            requirements(Category.liquid, ItemStack.with(Items.metaglass, 20, VeItems.silicide, 50, VeItems.chromium, 90));
+            health = 4500;
+            armor = 24f;
+            explosivenessScale = 0.25f;
+            flammabilityScale = 0f;
+            size = 3;
+            solid = true;
+            crushDamageMultiplier = 0.05f;
+            liquidCapacity = 2200f;
+        }};
+
+        /*
+        chainedPump;
+        silverConduit;
+        silicideSilverConduit;
+        valveFluidCross;
+        silverBridge;
+        valveFluidJunction;
+        */
+
         /*
         block = new TreeBlock("") {{
             // = new Block("") {{
@@ -3581,6 +3815,96 @@ public class VeBlocks {
 
         /*
         liquid = new LiquidBlock("") {{
+            // = new LiquidBlock("") {{
+                // = new Pump("") {{
+                    // = new SolidPump("") {{
+                        // = new Fracker("") {{
+                        itemUseTime = f; // 100f 物品消耗时间
+                        // Block
+                        envRequired |= Env.groundOil; // 0 必要环境
+                        hasItems = true; // 是否拥有物品模块
+                        ambientSound = Sounds.loopDrill; // none 空闲时发出的声音
+                        ambientSoundVolume = 0.03f; // 0.05f 空闲音效音量
+
+                    result = Liquids.; // water 抽取的液体类型
+                    updateEffect = Fx.; // none 工作特效
+                    updateEffectChance = f; // 0.02f 特效触发概率
+                    rotateSpeed = f; // 1f 转子旋转速度
+                    baseEfficiency = f; // 1f 基础效率
+                    attribute = Attribute.; // 增产属性类型
+                    // Block
+                    envEnabled = Env.terrestrial; // Env.terrestrial 可运行环境
+                    hasPower = true; // 是否拥有电力模块
+
+                pumpAmount = f / 60f; // 0.2f 每格每帧泵量
+                consumeTime = f; // 60f * 5f 额外消耗的时间间隔
+                warmupSpeed = f; // 0.019f 预热速度
+                // Block
+                update = true; // 该方块是否具有持续更新的方块实体
+                solid = true; // 是否为实体
+                group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+                envEnabled |= Env.space | Env.underwater; // Env.terrestrial 可运行环境
+                hasLiquids = true; // 是否拥有液体模块
+                outputsLiquid = true; // false 是否输出液体
+
+                // = new Conduit("") {{
+                    // = new ArmoredConduit("") {{
+                    // Conduit
+                    leaks = false;
+
+                rotatePad = f; // 6f 旋转偏移值
+                hpad = f; // rotatePad / 2f / 4f 半偏移值
+                botColor = Color.valueOf(""); // 565656 管道底部颜色
+                padCorners = ; // true 是否填充边角
+                leaks = ; // true 是否会泄漏液体
+                junctionReplacement = ; // 交叉器
+                bridgeReplacement = ; // 桥
+                rotBridgeReplacement = ; // 旋转桥
+                // Block
+                canOverdrive = false; // true 能否超速
+                priority = TargetPriority.transport; // TargetPriority.base 敌人瞄准优先级
+                solid = false; // 是否为实体
+                underBullets = true; // 如果为true, 则该方块除非被明确指定, 否则无法被子弹击中
+                floating = true; // false 是否可以放置在液体边缘
+                conveyorPlacement = true; // 是否使用传送带式放置模式
+                rotate = true; // 是否可旋转
+                noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+
+                // = new LiquidRouter("") {{
+                liquidPadding = f; // 0f 液体填充
+                // Block
+                canOverdrive = false; // true 能否超速
+                solid = true; // 是否为实体
+                floating = true; // false 是否可以放置在液体边缘
+                noUpdateDisabled = true; // false 当方块被禁用时，是否停止更新
+
+            // Block
+            update = true; // 该方块是否具有持续更新的方块实体
+            solid = true; // 是否为实体
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            envEnabled |= Env.space | Env.underwater; // Env.terrestrial 可运行环境
+            hasLiquids = true; // 是否拥有液体模块
+            outputsLiquid = true; // false 是否输出液体
+
+            // = new LiquidBridge("") {{
+            // ItemBridge
+            range = ; // 最大连接距离
+            transportTime = f; // 物品从一端传输到另一端所需的时间
+            fadeIn = ; // true 是否渐显
+            moveArrows = ; // true 是否显示移动的箭头
+            pulse = ; // false 是否启用脉冲效果
+            arrowSpacing = f; // 4f 箭头之间的间隔距离
+            arrowOffset = f; // 2f 箭头位置的偏移量
+            arrowPeriod = f; // 0.4f 箭头动画周期
+            arrowTimeScl = f; // 6.2f 箭头动画时间缩放
+            bridgeWidth = f; // 6.5f 桥身绘制的宽度
+            // Block
+            canOverdrive = false; // true 能否超速
+            group = BlockGroup.liquids; // 属于哪个组, 同组方块可以相互替换
+            envEnabled = Env.any; // Env.terrestrial 可运行环境
+            hasItems = false; // 是否拥有物品模块
+            hasLiquids = true; // 是否拥有液体模块
+            outputsLiquid = true; // false 是否输出液体
 
             // = new DirectionLiquidBridge("") {{
             speed = f; // 5f 液体传输速度
