@@ -1536,7 +1536,7 @@
                     envEnabled = Env.terrestrial; // Env.terrestrial 可运行环境
                     hasPower = true; // 是否拥有电力模块
 
-                pumpAmount = f / 60f; // 0.2f 每格每帧泵量
+                pumpAmount = f / 60f; // 0.2f 每帧泵量
                 consumeTime = f; // 60f * 5f 额外消耗的时间间隔
                 warmupSpeed = f; // 0.019f 预热速度
                 // Block
